@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Primary Meta Tags -->
+    <title>RK CREATIVE | Video Editor × AI Creator</title>
+    <meta name="title" content="RK CREATIVE | Video Editor × AI Creator" />
+    <meta name="description" content="Turning ideas into visual stories. Professional Video Editing, AI Generated Content, Short Form, Long Form, and Motion Graphics portfolio by RK CREATIVE." />
+    <meta name="keywords" content="Video Editor, AI Creator, Premiere Pro, After Effects, DaVinci Resolve, Motion Graphics, Short Form Content, TikTok, Instagram Reels, X Videos" />
+    <meta name="author" content="RK CREATIVE" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://rkcreative.studio/" />
+    <meta property="og:title" content="RK CREATIVE | Video Editor × AI Creator" />
+    <meta property="og:description" content="Turning ideas into visual stories. Professional Video Editing & AI Generated Content portfolio." />
+    <meta property="og:image" content="/images/hero-dark.jpg" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://rkcreative.studio/" />
+    <meta property="twitter:title" content="RK CREATIVE | Video Editor × AI Creator" />
+    <meta property="twitter:description" content="Turning ideas into visual stories. Professional Video Editing & AI Generated Content portfolio." />
+    <meta property="twitter:image" content="/images/hero-dark.jpg" />
+
+    <!-- Theme Initialization Script to Prevent FOUC -->
+    <script>
+      (function() {
+        try {
+          const storedTheme = localStorage.getItem('rk_theme');
+          if (storedTheme === 'light') {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.add('light');
+          } else if (storedTheme === 'dark') {
+            document.documentElement.classList.remove('light');
+            document.documentElement.classList.add('dark');
+          } else {
+            // Respect system preference on first visit, default dark
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (prefersDark === false) {
+              document.documentElement.classList.remove('dark');
+              document.documentElement.classList.add('light');
+            } else {
+              document.documentElement.classList.remove('light');
+              document.documentElement.classList.add('dark');
+            }
+          }
+        } catch (e) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+  </head>
+  <body class="bg-[#f7f7f5] text-[#0d0d11] dark:bg-[#070707] dark:text-[#ffffff] transition-colors duration-300 min-h-screen">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
