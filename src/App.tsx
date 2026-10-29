@@ -4,7 +4,7 @@ import { Navbar } from './sections/Navbar';
 import { Hero } from './sections/Hero';
 import { StatsBar } from './sections/StatsBar';
 import { LatestFromX } from './sections/LatestFromX';
-import { MediaTriad } from './sections/MediaTriad';
+import { InstagramReels } from './sections/InstagramReels';
 import { AboutAndTools } from './sections/AboutAndTools';
 import { Footer } from './sections/Footer';
 import type { VideoItem } from './data/videos';
@@ -59,8 +59,8 @@ export const AppContent: React.FC = () => {
         {/* 4. LATEST FROM X (TWITTER) */}
         <LatestFromX onSelectVideo={setSelectedVideo} />
 
-        {/* 5. MEDIA TRIAD (Instagram Reels, AI Creations, Editing Projects) */}
-        <MediaTriad onSelectVideo={setSelectedVideo} />
+        {/* 5. INSTAGRAM REELS (From @rk.creative.ai) */}
+        <InstagramReels onSelectVideo={setSelectedVideo} />
 
         {/* 6. ABOUT ME, TOOLS I USE, LET'S WORK TOGETHER */}
         <AboutAndTools />

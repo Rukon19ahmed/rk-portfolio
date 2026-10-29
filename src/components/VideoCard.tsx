@@ -79,13 +79,14 @@ export const VideoCard: React.FC<VideoCardProps> = ({
           </div>
         </div>
 
-        {/* Bottom View Pill */}
-        <div className="absolute bottom-2 left-2 right-2 flex items-center justify-start pointer-events-none">
-          <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-white text-[10px] font-semibold tracking-wide shadow-sm">
-            <Eye className="w-2.5 h-2.5 text-white/90" />
-            <span>{formatNumber(video.views || 0)}</span>
+        {/* Bottom Title on Hover */}
+        {video.title && (
+          <div className="absolute bottom-2.5 left-2.5 right-2.5 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <span className="text-[11px] font-semibold text-white drop-shadow-md line-clamp-1 block">
+              {video.title}
+            </span>
           </div>
-        </div>
+        )}
       </div>
     );
   }
@@ -132,13 +133,14 @@ export const VideoCard: React.FC<VideoCardProps> = ({
           </div>
         </div>
 
-        {/* Bottom View Pill */}
-        <div className="absolute bottom-2 left-2 right-2 flex items-center justify-start pointer-events-none">
-          <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-white text-[10px] font-semibold tracking-wide shadow-sm">
-            <Eye className="w-2.5 h-2.5 text-white/90" />
-            <span>{formatNumber(video.views || 0)}</span>
+        {/* Bottom Title on Hover */}
+        {video.title && (
+          <div className="absolute bottom-2.5 left-2.5 right-2.5 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <span className="text-[11px] font-semibold text-white drop-shadow-md line-clamp-1 block">
+              {video.title}
+            </span>
           </div>
-        </div>
+        )}
       </div>
     );
   }

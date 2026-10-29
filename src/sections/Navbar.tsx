@@ -29,7 +29,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       setScrolled(window.scrollY > 20);
 
       if (currentRoute === 'home') {
-        const sections = ['home', 'videos', 'ai-creations', 'projects', 'about', 'contact'];
+        const sections = ['home', 'videos', 'reels', 'about', 'contact'];
         const scrollPosition = window.scrollY + 200;
 
         for (const sectionId of sections) {
@@ -52,9 +52,8 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navLinks = [
     { id: 'home', label: 'Home', href: '#home' },
-    { id: 'videos', label: 'Videos', href: '#videos' },
-    { id: 'ai-creations', label: 'AI Creations', href: '#ai-creations' },
-    { id: 'projects', label: 'Projects', href: '#projects' },
+    { id: 'videos', label: 'Videos (X)', href: '#videos' },
+    { id: 'reels', label: 'Instagram Reels', href: '#reels' },
     { id: 'about', label: 'About', href: '#about' },
     { id: 'contact', label: 'Contact', href: '#contact' },
   ];

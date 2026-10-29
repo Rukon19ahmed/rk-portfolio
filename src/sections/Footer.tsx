@@ -4,9 +4,8 @@ import { profileData } from '../data/profile';
 export const Footer: React.FC = () => {
   const navLinks = [
     { label: 'Home', href: '#home' },
-    { label: 'Videos', href: '#videos' },
-    { label: 'AI Creations', href: '#ai-creations' },
-    { label: 'Projects', href: '#projects' },
+    { label: 'Videos (X)', href: '#videos' },
+    { label: 'Instagram Reels', href: '#reels' },
     { label: 'About', href: '#about' },
     { label: 'Contact', href: '#contact' },
   ];
