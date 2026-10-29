@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import type { VideoItem } from '../data/videos';
 import { videosData } from '../data/videos';
 import { VideoCard } from '../components/VideoCard';
 import { profileData } from '../data/profile';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { XIcon } from '../components/SocialIcons';
 
 interface LatestFromXProps {
@@ -11,24 +11,12 @@ interface LatestFromXProps {
 }
 
 export const LatestFromX: React.FC<LatestFromXProps> = ({ onSelectVideo }) => {
-  const [activeTab, setActiveTab] = useState<'featured' | 'real'>('featured');
-
-  // Featured 5 from reference design
-  const featuredXVideos = useMemo(() => {
+  // Sort user's real X videos by views descending
+  const xVideos = useMemo(() => {
     return videosData
-      .filter(v => v.platform === 'x' && !v.isRealPost)
-      .sort((a, b) => b.views - a.views)
-      .slice(0, 5);
+      .filter((v) => v.platform === 'x')
+      .sort((a, b) => (b.views || 0) - (a.views || 0));
   }, []);
-
-  // Real posts from user's Twitter profile screenshots
-  const realXVideos = useMemo(() => {
-    return videosData
-      .filter(v => v.platform === 'x' && v.isRealPost)
-      .sort((a, b) => b.views - a.views);
-  }, []);
-
-  const displayedVideos = activeTab === 'featured' ? featuredXVideos : realXVideos;
 
   return (
     <section id="videos" className="py-8 sm:py-12">
@@ -45,52 +33,24 @@ export const LatestFromX: React.FC<LatestFromXProps> = ({ onSelectVideo }) => {
               </h2>
             </div>
             <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400">
-              My viral videos and latest content from X. Sorted by real-time views.
+              My viral videos and latest content from @Rukon__Kholifa. Sorted by real-time views.
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* View Mode Tabs */}
-            <div className="inline-flex items-center p-1 rounded-full bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-xs font-semibold">
-              <button
-                onClick={() => setActiveTab('featured')}
-                className={`px-3 py-1.5 rounded-full transition-all duration-200 ${
-                  activeTab === 'featured'
-                    ? 'bg-white dark:bg-[#1a1a1e] text-black dark:text-white shadow-sm'
-                    : 'text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white'
-                }`}
-              >
-                Viral Hits
-              </button>
-              <button
-                onClick={() => setActiveTab('real')}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-200 ${
-                  activeTab === 'real'
-                    ? 'bg-white dark:bg-[#1a1a1e] text-black dark:text-white shadow-sm'
-                    : 'text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white'
-                }`}
-              >
-                <Sparkles className="w-3 h-3 text-amber-500" />
-                <span>My Profile Posts</span>
-              </button>
-            </div>
-
-            {/* View All on X CTA */}
-            <a
-              href={profileData.socials.x}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-black/15 dark:border-white/15 hover:border-black/30 dark:hover:border-white/30 text-xs sm:text-sm font-semibold text-neutral-800 dark:text-neutral-200 hover:text-black dark:hover:text-white bg-transparent transition-all hover:scale-[1.02]"
-            >
-              <span>View All on X</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </a>
-          </div>
+          <a
+            href={profileData.socials.x}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center self-start sm:self-auto gap-2 px-4 py-2 rounded-full border border-black/15 dark:border-white/15 hover:border-black/30 dark:hover:border-white/30 text-xs sm:text-sm font-semibold text-neutral-800 dark:text-neutral-200 hover:text-black dark:hover:text-white bg-transparent transition-all hover:scale-[1.02]"
+          >
+            <span>View All on X</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </a>
         </div>
 
-        {/* Video Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {displayedVideos.map(video => (
+        {/* Real Video Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+          {xVideos.map((video) => (
             <VideoCard
               key={video.id}
               video={video}
@@ -99,21 +59,7 @@ export const LatestFromX: React.FC<LatestFromXProps> = ({ onSelectVideo }) => {
             />
           ))}
         </div>
-
-        {/* Mobile View All Link */}
-        <div className="mt-4 sm:hidden text-center">
-          <a
-            href={profileData.socials.x}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-800 dark:text-neutral-200 hover:underline"
-          >
-            <span>View All on X</span>
-            <ArrowRight className="w-3 h-3" />
-          </a>
-        </div>
       </div>
     </section>
   );
 };
-

@@ -83,7 +83,7 @@ export const VideoCard: React.FC<VideoCardProps> = ({
         <div className="absolute bottom-2 left-2 right-2 flex items-center justify-start pointer-events-none">
           <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-white text-[10px] font-semibold tracking-wide shadow-sm">
             <Eye className="w-2.5 h-2.5 text-white/90" />
-            <span>{formatNumber(video.views)}</span>
+            <span>{formatNumber(video.views || 0)}</span>
           </div>
         </div>
       </div>
@@ -136,7 +136,7 @@ export const VideoCard: React.FC<VideoCardProps> = ({
         <div className="absolute bottom-2 left-2 right-2 flex items-center justify-start pointer-events-none">
           <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-white text-[10px] font-semibold tracking-wide shadow-sm">
             <Eye className="w-2.5 h-2.5 text-white/90" />
-            <span>{formatNumber(video.views)}</span>
+            <span>{formatNumber(video.views || 0)}</span>
           </div>
         </div>
       </div>
@@ -266,26 +266,26 @@ export const VideoCard: React.FC<VideoCardProps> = ({
         <div className="flex items-center gap-3 sm:gap-4 text-[11px] sm:text-[12px] font-medium text-neutral-600 dark:text-neutral-400 pt-1 border-t border-black/5 dark:border-white/5">
           <div
             className="flex items-center gap-1 hover:text-neutral-900 dark:hover:text-white transition-colors"
-            title={`${video.views.toLocaleString()} views`}
+            title={`${(video.views || 0).toLocaleString()} views`}
           >
             <Eye className="w-3.5 h-3.5" />
-            <span>{formatNumber(video.views)}</span>
+            <span>{formatNumber(video.views || 0)}</span>
           </div>
 
           <div
             className="flex items-center gap-1 hover:text-neutral-900 dark:hover:text-white transition-colors"
-            title={`${video.likes.toLocaleString()} likes`}
+            title={`${(video.likes || 0).toLocaleString()} likes`}
           >
             <Heart className="w-3.5 h-3.5" />
-            <span>{formatNumber(video.likes)}</span>
+            <span>{formatNumber(video.likes || 0)}</span>
           </div>
 
           <div
             className="flex items-center gap-1 hover:text-neutral-900 dark:hover:text-white transition-colors"
-            title={`${video.reposts.toLocaleString()} reposts`}
+            title={`${(video.reposts || 0).toLocaleString()} reposts`}
           >
             <Repeat className="w-3.5 h-3.5" />
-            <span>{formatNumber(video.reposts)}</span>
+            <span>{formatNumber(video.reposts || 0)}</span>
           </div>
         </div>
       </div>
