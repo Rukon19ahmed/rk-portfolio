@@ -131,3 +131,4 @@ export const MediaTriad: React.FC<MediaTriadProps> = ({
     </section>
   );
 };
+

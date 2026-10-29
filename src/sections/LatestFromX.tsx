@@ -116,3 +116,4 @@ export const LatestFromX: React.FC<LatestFromXProps> = ({ onSelectVideo }) => {
     </section>
   );
 };
+

@@ -4,7 +4,7 @@ export interface StatItem {
   id: string;
   label: string;
   value: number; // Raw number for animated count-up
-  displayOverride?: string; // e.g. "12M+" or "2.9K+"
+  displayOverride?: string; // e.g. "1M+" or "2.9K+"
   icon: 'x' | 'eye' | 'video' | 'heart' | 'repeat';
 }
 
@@ -20,8 +20,8 @@ export interface StatsConfig {
 export const statsConfig: StatsConfig = {
   useAutoCalculatedTotalViews: false,
   manualTotalViewsOverride: {
-    value: 12_000_000,
-    display: "12M+",
+    value: 1_000_000,
+    display: "1M+",
   },
   stats: [
     {
@@ -34,8 +34,8 @@ export const statsConfig: StatsConfig = {
     {
       id: "total-views",
       label: "Total Video Views",
-      value: 12000000,
-      displayOverride: "12M+",
+      value: 1000000,
+      displayOverride: "1M+",
       icon: "eye",
     },
     {
@@ -48,8 +48,8 @@ export const statsConfig: StatsConfig = {
     {
       id: "total-likes",
       label: "Total Likes",
-      value: 450000,
-      displayOverride: "450K+",
+      value: 100000,
+      displayOverride: "100K+",
       icon: "heart",
     },
     {
