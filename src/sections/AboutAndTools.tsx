@@ -108,7 +108,7 @@ export const AboutAndTools: React.FC = () => {
             </div>
 
             <p className="text-[11px] text-center text-neutral-500 dark:text-neutral-500 pt-3 border-t border-black/5 dark:border-white/5">
-              Adobe Creative Cloud • DaVinci • Generative AI
+              Seedance 2.5 • DaVinci • Claude • Premiere • Ae • Ps
             </p>
           </div>
 

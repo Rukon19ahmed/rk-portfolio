@@ -3,7 +3,7 @@ export interface ToolItem {
   name: string;
   shortName: string;
   category: string;
-  iconType: 'pr' | 'ae' | 'davinci' | 'chatgpt' | 'midjourney' | 'ps';
+  iconType: 'pr' | 'ae' | 'davinci' | 'claude' | 'seedance' | 'ps';
   bgGradient: string;
   textColor: string;
 }
@@ -13,7 +13,7 @@ export const toolsData: ToolItem[] = [
     id: 'pr',
     name: 'Adobe Premiere Pro',
     shortName: 'Pr',
-    category: 'Video Editing',
+    category: 'Cinematic Editing',
     iconType: 'pr',
     bgGradient: 'from-[#17002e] to-[#0d001a]',
     textColor: '#9999ff',
@@ -37,31 +37,30 @@ export const toolsData: ToolItem[] = [
     textColor: '#ffffff',
   },
   {
-    id: 'chatgpt',
-    name: 'ChatGPT',
-    shortName: 'GPT',
-    category: 'Scriptwriting & Ideas',
-    iconType: 'chatgpt',
-    bgGradient: 'from-[#101010] to-[#080808]',
-    textColor: '#ffffff',
+    id: 'seedance',
+    name: 'Seedance 2.5',
+    shortName: 'Seedance',
+    category: 'AI Video & Film Engine',
+    iconType: 'seedance',
+    bgGradient: 'from-[#062419] to-[#03130d]',
+    textColor: '#34d399',
   },
   {
-    id: 'midjourney',
-    name: 'Midjourney',
-    shortName: 'MJ',
-    category: 'AI Image Generation',
-    iconType: 'midjourney',
-    bgGradient: 'from-[#121418] to-[#0a0c0e]',
-    textColor: '#ffffff',
+    id: 'claude',
+    name: 'Claude AI',
+    shortName: 'Claude',
+    category: 'AI Story & Scripts',
+    iconType: 'claude',
+    bgGradient: 'from-[#2b1610] to-[#140b08]',
+    textColor: '#d97757',
   },
   {
     id: 'ps',
     name: 'Adobe Photoshop',
     shortName: 'Ps',
-    category: 'Thumbnails & Assets',
+    category: 'Asset & Frame Design',
     iconType: 'ps',
     bgGradient: 'from-[#001833] to-[#000d1a]',
     textColor: '#31a8ff',
   },
 ];
-

@@ -25,7 +25,7 @@ export const Footer: React.FC = () => {
                 {profileData.brandName}
               </span>
               <span className="text-[11px] text-neutral-500 dark:text-neutral-400">
-                Video Editor &nbsp;|&nbsp; AI Creator &nbsp;|&nbsp; Visual Storyteller
+                AI Film Creator &nbsp;|&nbsp; Video Editor &nbsp;|&nbsp; Visual Storyteller
               </span>
             </div>
           </div>
