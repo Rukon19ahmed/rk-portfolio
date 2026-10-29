@@ -5,8 +5,6 @@ import { XIcon, InstagramIcon, YouTubeIcon } from '../components/SocialIcons';
 import {
   Sun,
   Moon,
-  Menu,
-  X as CloseIcon,
   ArrowRight,
 } from 'lucide-react';
 
@@ -20,7 +18,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   onNavigate,
 }) => {
   const { theme, toggleTheme } = useTheme();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [scrolled, setScrolled] = useState(false);
 
@@ -59,8 +56,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   const handleNavClick = (id: string, href: string) => {
-    setMobileMenuOpen(false);
-
     if (currentRoute !== 'home' && onNavigate) {
       onNavigate('home');
       setTimeout(() => {
@@ -81,11 +76,12 @@ export const Navbar: React.FC<NavbarProps> = ({
     <nav
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         scrolled
-          ? 'bg-white/80 dark:bg-[#070709]/85 backdrop-blur-xl border-b border-black/[0.06] dark:border-white/[0.06] py-3 shadow-sm'
-          : 'bg-transparent py-4'
+          ? 'bg-white/85 dark:bg-[#070709]/90 backdrop-blur-xl border-b border-black/[0.06] dark:border-white/[0.06] shadow-sm'
+          : 'bg-white/60 dark:bg-[#070709]/60 backdrop-blur-md border-b border-black/[0.04] dark:border-white/[0.04]'
       }`}
     >
-      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      {/* Top Navbar Row */}
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
         {/* Brand Logo */}
         <a
           href="#home"
@@ -129,7 +125,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right Desktop Actions: Socials + Theme Toggle + Hire Me */}
         <div className="hidden lg:flex items-center gap-3">
-          {/* Social Icons */}
           <div className="flex items-center gap-1.5">
             <a
               href={profileData.socials.x}
@@ -185,8 +180,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           </a>
         </div>
 
-        {/* Mobile Actions: Theme + Hamburger */}
-        <div className="flex lg:hidden items-center gap-2">
+        {/* Mobile Top Actions: Theme + Hire Me */}
+        <div className="flex md:hidden items-center gap-2">
           <button
             onClick={toggleTheme}
             aria-label="Toggle Dark / Light Theme"
@@ -195,79 +190,39 @@ export const Navbar: React.FC<NavbarProps> = ({
             {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-300" /> : <Moon className="w-4 h-4 text-neutral-800" />}
           </button>
 
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle navigation menu"
-            className="p-2 rounded-xl text-black dark:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+          <a
+            href={profileData.socials.xDm}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold bg-black text-white dark:bg-white dark:text-black shadow-sm"
           >
-            {mobileMenuOpen ? <CloseIcon className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+            <span>Hire Me</span>
+            <ArrowRight className="w-3 h-3" />
+          </a>
         </div>
       </div>
 
-      {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden px-4 pt-3 pb-6 bg-white/95 dark:bg-[#070709]/95 backdrop-blur-2xl border-b border-black/10 dark:border-white/10 flex flex-col gap-3 shadow-xl">
-          <div className="flex flex-col gap-1">
-            {navLinks.map(link => (
-              <a
-                key={link.id}
-                href={link.href}
-                onClick={e => {
-                  e.preventDefault();
-                  handleNavClick(link.id, link.href);
-                }}
-                className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                  activeSection === link.id && currentRoute === 'home'
-                    ? 'bg-black/10 dark:bg-white/15 text-black dark:text-white font-semibold'
-                    : 'text-neutral-700 dark:text-neutral-300 hover:bg-black/5 dark:hover:bg-white/5'
-                }`}
-              >
-                {link.label}
-              </a>
-            ))}
-          </div>
-
-          <div className="pt-3 border-t border-black/10 dark:border-white/10 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <a
-                href={profileData.socials.x}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10"
-              >
-                <XIcon className="w-4 h-4" />
-              </a>
-              <a
-                href={profileData.socials.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10"
-              >
-                <InstagramIcon className="w-4 h-4" />
-              </a>
-              <a
-                href={profileData.socials.youtube}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10"
-              >
-                <YouTubeIcon className="w-4 h-4" />
-              </a>
-            </div>
-
-            <a
-              href={profileData.socials.xDm}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-black text-white dark:bg-white dark:text-black"
+      {/* ======================================================== */}
+      {/* MOBILE QUICK-TABS BAR (Always visible & easily scrollable) */}
+      {/* ======================================================== */}
+      <div className="md:hidden px-3 pb-2 pt-0.5 overflow-x-auto no-scrollbar flex items-center gap-1.5">
+        {navLinks.map(link => {
+          const isActive = activeSection === link.id && currentRoute === 'home';
+          return (
+            <button
+              key={link.id}
+              onClick={() => handleNavClick(link.id, link.href)}
+              className={`px-3 py-1.5 rounded-full text-[12px] font-semibold whitespace-nowrap transition-all duration-200 flex-shrink-0 ${
+                isActive
+                  ? 'bg-black text-white dark:bg-white dark:text-black shadow-sm'
+                  : 'bg-black/[0.04] dark:bg-white/[0.06] text-neutral-600 dark:text-neutral-300 hover:text-black dark:hover:text-white'
+              }`}
             >
-              <span>Hire Me</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </a>
-          </div>
-        </div>
-      )}
+              {link.label}
+            </button>
+          );
+        })}
+      </div>
     </nav>
   );
 };
