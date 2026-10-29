@@ -82,3 +82,4 @@ The application is structured to easily integrate an external API endpoint or se
 2. (Optional) Place your preview MP4 in `public/videos/` (e.g. `my-new-video.mp4`).
 3. Add a new object to the `videosData` array in `src/data/videos.ts`.
 4. Run `npm run build` or commit to GitHub; your site will automatically update on Vercel/Netlify.
+

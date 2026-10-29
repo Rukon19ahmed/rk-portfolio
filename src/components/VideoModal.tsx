@@ -77,22 +77,6 @@ export const VideoModal: React.FC<VideoModalProps> = ({
     }
   }, [video]);
 
-  useEffect(() => {
-    if (showEmbed && video) {
-      if (video.platform === 'x' && !(window as any).twttr) {
-        const script = document.createElement('script');
-        script.src = 'https://platform.twitter.com/widgets.js';
-        script.async = true;
-        document.body.appendChild(script);
-      } else if (video.platform === 'instagram' && !(window as any).instgrm) {
-        const script = document.createElement('script');
-        script.src = 'https://www.instagram.com/embed.js';
-        script.async = true;
-        document.body.appendChild(script);
-      }
-    }
-  }, [showEmbed, video]);
-
   if (!video) return null;
 
   const togglePlay = () => {
@@ -143,6 +127,16 @@ export const VideoModal: React.FC<VideoModalProps> = ({
     project: 'Editing Project',
   }[video.platform];
 
+  // Helper to extract tweet ID for embedded player
+  const tweetMatch = video.postUrl.match(/status\/(\d+)/);
+  const tweetId = tweetMatch ? tweetMatch[1] : null;
+
+  // Helper to clean Instagram URL for embed
+  const isInstagram = video.postUrl.includes('instagram.com');
+  const instagramEmbedUrl = isInstagram
+    ? `${video.postUrl.replace(/\/$/, '')}/embed/captioned/`
+    : null;
+
   return (
     <div
       role="dialog"
@@ -155,6 +149,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({
         onClick={e => e.stopPropagation()}
         className="relative w-full max-w-5xl max-h-[92vh] flex flex-col rounded-3xl overflow-hidden bg-[#101010] text-white border border-white/15 shadow-2xl"
       >
+        {/* Header Bar */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/10 bg-[#161616]/70 backdrop-blur-md">
           <div className="flex items-center gap-2.5">
             <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-white/10 text-white border border-white/15 uppercase tracking-wider">
@@ -176,7 +171,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({
                 onClick={() => setShowEmbed(!showEmbed)}
                 className="px-2.5 py-1 text-xs font-medium rounded-lg bg-white/10 hover:bg-white/20 text-neutral-200 transition-colors hidden sm:block"
               >
-                {showEmbed ? 'Watch Video File' : 'View Social Embed'}
+                {showEmbed ? 'Watch Video File' : 'View Social Post Embed'}
               </button>
             )}
 
@@ -198,6 +193,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({
           </div>
         </div>
 
+        {/* Content View */}
         <div className="relative flex-1 min-h-[300px] sm:min-h-[420px] max-h-[64vh] bg-black flex items-center justify-center overflow-hidden">
           {hasPrev && onPrev && (
             <button
@@ -286,31 +282,48 @@ export const VideoModal: React.FC<VideoModalProps> = ({
               </div>
             </div>
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-[#0a0a0a]">
-              <div className="max-w-md p-6 rounded-2xl bg-[#141414] border border-white/10 flex flex-col items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
-                  <ExternalLink className="w-6 h-6 text-neutral-200" />
+            <div className="w-full h-full flex flex-col items-center justify-center p-4 bg-[#0a0a0a] overflow-y-auto">
+              {tweetId ? (
+                <iframe
+                  title={video.title}
+                  src={`https://platform.twitter.com/embed/Tweet.html?id=${tweetId}&theme=dark`}
+                  className="w-full max-w-[500px] h-[480px] border-none rounded-xl"
+                  allowFullScreen
+                />
+              ) : instagramEmbedUrl ? (
+                <iframe
+                  title={video.title}
+                  src={instagramEmbedUrl}
+                  className="w-full max-w-[450px] h-[520px] border-none rounded-xl"
+                  allowFullScreen
+                />
+              ) : (
+                <div className="max-w-md p-6 rounded-2xl bg-[#141414] border border-white/10 flex flex-col items-center gap-4 text-center">
+                  <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
+                    <ExternalLink className="w-6 h-6 text-neutral-200" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-lg text-white mb-1">{video.title}</h4>
+                    <p className="text-xs text-neutral-400">
+                      Live post on {platformLabel}. Click below to view the authentic post on {platformLabel}.
+                    </p>
+                  </div>
+                  <a
+                    href={video.postUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-2.5 px-5 rounded-full bg-white text-black font-semibold text-sm hover:bg-neutral-200 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <span>Open on {platformLabel}</span>
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
                 </div>
-                <div>
-                  <h4 className="font-semibold text-lg text-white mb-1">{video.title}</h4>
-                  <p className="text-xs text-neutral-400">
-                    Published on {platformLabel}. Click below to view the authentic post, comments, and conversation on {platformLabel}.
-                  </p>
-                </div>
-                <a
-                  href={video.postUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-2.5 px-5 rounded-full bg-white text-black font-semibold text-sm hover:bg-neutral-200 transition-colors flex items-center justify-center gap-2"
-                >
-                  <span>Open on {platformLabel}</span>
-                  <ExternalLink className="w-4 h-4" />
-                </a>
-              </div>
+              )}
             </div>
           )}
         </div>
 
+        {/* Bottom Details Footer */}
         <div className="px-5 py-4 border-t border-white/10 bg-[#121212] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-xs sm:text-sm text-neutral-300">
             <div className="flex items-center gap-1.5" title="Total Views">

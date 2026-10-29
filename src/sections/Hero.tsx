@@ -114,3 +114,4 @@ export const Hero: React.FC<HeroProps> = ({ onWatchShowreel }) => {
     </section>
   );
 };
+

@@ -12,6 +12,7 @@ export interface SkillChip {
 export interface ProfileData {
   brandName: string;
   creatorName: string;
+  fullName: string;
   roleTagline: string;
   heroTitle: {
     line1: string;
@@ -49,6 +50,7 @@ export interface ProfileData {
 export const profileData: ProfileData = {
   brandName: "RK CREATIVE",
   creatorName: "RK",
+  fullName: "Md Rukon Kholifa",
   roleTagline: "VIDEO EDITOR  ×  AI CREATOR",
   heroTitle: {
     line1: "TURNING IDEAS",
@@ -62,7 +64,7 @@ export const profileData: ProfileData = {
   signature: "R.K. Creative",
   hoodieText: "Good Videos Better Stories.",
   location: "Bangladesh",
-  bioHeading: "Hi, I'm RK.",
+  bioHeading: "Hi, I'm Md Rukon Kholifa.",
   bio: "A Video Editor and AI Creator from Bangladesh. I create engaging short-form and long-form content using professional editing and AI tools. My goal is to turn ideas into visual stories that people love to watch and share.",
   images: {
     heroDark: "/images/hero-dark.jpg",
@@ -71,13 +73,13 @@ export const profileData: ProfileData = {
   },
   showreelVideo: "/videos/showreel.mp4",
   socials: {
-    x: "https://x.com/rkcreative_",
-    instagram: "https://instagram.com/rkcreative_",
+    x: "https://x.com/Rukon__Kholifa",
+    instagram: "https://www.instagram.com/rk.creative.ai/",
     youtube: "https://youtube.com/@rkcreative",
     tiktok: "https://tiktok.com/@rkcreative",
     website: "https://rkcreative.studio",
-    email: "rkcreative.studio@gmail.com",
-    xDm: "https://x.com/messages/compose?recipient_id=rkcreative_",
+    email: "mdrukon6789@gmail.com",
+    xDm: "https://x.com/messages/compose?recipient_id=Rukon__Kholifa",
   },
   miniBadges: [
     {
