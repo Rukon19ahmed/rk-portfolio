@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import type { VideoItem } from '../data/videos';
 import { formatNumber } from '../utils/formatters';
+import { useTheme } from '../hooks/useTheme';
 import {
   X,
   ChevronLeft,
@@ -8,15 +9,9 @@ import {
   ExternalLink,
   Eye,
   Heart,
+  MessageCircle,
   Repeat,
-  Play,
-  Pause,
-  Volume2,
-  VolumeX,
-  Maximize2,
   Calendar,
-  Share2,
-  Check,
 } from 'lucide-react';
 
 interface VideoModalProps {
@@ -36,13 +31,11 @@ export const VideoModal: React.FC<VideoModalProps> = ({
   hasNext = true,
   hasPrev = true,
 }) => {
+  const { theme } = useTheme();
   const videoPlayerRef = useRef<HTMLVideoElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [isMuted, setIsMuted] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [copied, setCopied] = useState(false);
-  const [showEmbed, setShowEmbed] = useState(false);
+  const tweetEmbedContainerRef = useRef<HTMLDivElement | null>(null);
 
+  // Keyboard navigation: ESC, Left, Right
   useEffect(() => {
     if (!video) return;
 
@@ -65,302 +58,251 @@ export const VideoModal: React.FC<VideoModalProps> = ({
     };
   }, [video, onNext, onPrev, hasNext, hasPrev, onClose]);
 
+  // Dev check: warn in console if a thumbnail is smaller than 480px wide
   useEffect(() => {
-    setIsPlaying(true);
-    setProgress(0);
-    setShowEmbed(!video?.videoSrc);
-    if (videoPlayerRef.current) {
-      videoPlayerRef.current.currentTime = 0;
-      videoPlayerRef.current.play().catch(() => {
-        setIsPlaying(false);
-      });
-    }
+    if (!video?.thumbnail) return;
+    const testImg = new Image();
+    testImg.src = video.thumbnail;
+    testImg.onload = () => {
+      if (testImg.naturalWidth < 480) {
+        console.warn(
+          `[Thumbnail Quality Warning] Video "${video.title}" has thumbnail width of ${testImg.naturalWidth}px, which is below the recommended 480px minimum. Recommended: 720px+ WebP.`
+        );
+      }
+    };
   }, [video]);
+
+  // Handle X (Twitter) official embed with widgets.js if no local video exists
+  const tweetMatch = video?.postUrl ? video.postUrl.match(/status\/(\d+)/) : null;
+  const tweetId = tweetMatch ? tweetMatch[1] : null;
+
+  useEffect(() => {
+    if (!video || video.videoSrc || !tweetId || !tweetEmbedContainerRef.current) return;
+
+    const container = tweetEmbedContainerRef.current;
+    container.innerHTML = '';
+
+    const renderTweet = () => {
+      const twttr = (window as any).twttr;
+      if (twttr && twttr.widgets) {
+        twttr.widgets.createTweet(tweetId, container, {
+          theme: theme === 'dark' ? 'dark' : 'light',
+          align: 'center',
+          conversation: 'none',
+        });
+      }
+    };
+
+    if (!(window as any).twttr) {
+      const script = document.createElement('script');
+      script.src = 'https://platform.twitter.com/widgets.js';
+      script.async = true;
+      script.onload = renderTweet;
+      document.body.appendChild(script);
+    } else {
+      renderTweet();
+    }
+  }, [video, tweetId, theme]);
 
   if (!video) return null;
 
-  const togglePlay = () => {
-    if (!videoPlayerRef.current) return;
-    if (isPlaying) {
-      videoPlayerRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      videoPlayerRef.current.play();
-      setIsPlaying(true);
-    }
-  };
-
-  const toggleMute = () => {
-    if (!videoPlayerRef.current) return;
-    videoPlayerRef.current.muted = !isMuted;
-    setIsMuted(!isMuted);
-  };
-
-  const handleTimeUpdate = () => {
-    if (!videoPlayerRef.current) return;
-    const current = videoPlayerRef.current.currentTime;
-    const duration = videoPlayerRef.current.duration;
-    if (duration > 0) {
-      setProgress((current / duration) * 100);
-    }
-  };
-
-  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!videoPlayerRef.current) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const newProgress = clickX / rect.width;
-    videoPlayerRef.current.currentTime = newProgress * videoPlayerRef.current.duration;
-    setProgress(newProgress * 100);
-  };
-
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(video.postUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const platformLabel = {
-    x: 'X (Twitter)',
-    instagram: 'Instagram',
-    ai: 'AI Creation',
-    project: 'Editing Project',
-  }[video.platform];
-
-  // Helper to extract tweet ID for embedded player
-  const tweetMatch = video.postUrl.match(/status\/(\d+)/);
-  const tweetId = tweetMatch ? tweetMatch[1] : null;
-
-  // Helper to clean Instagram URL for embed
+  const isVertical = video.orientation === 'vertical';
   const isInstagram = video.postUrl.includes('instagram.com');
-  const instagramEmbedUrl = isInstagram
+  const isPostUrlValid = video.postUrl && !video.postUrl.startsWith('TODO');
+  const instagramEmbedUrl = isInstagram && isPostUrlValid
     ? `${video.postUrl.replace(/\/$/, '')}/embed/captioned/`
     : null;
+
+  const platformDisplayName = {
+    x: 'X',
+    instagram: 'Instagram',
+    ai: 'X',
+    project: 'YouTube',
+  }[video.platform] || 'X';
 
   return (
     <div
       role="dialog"
       aria-modal="true"
       aria-label={video.title}
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 md:p-8 bg-black/85 backdrop-blur-xl animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/85 backdrop-blur-xl animate-fade-in"
       onClick={onClose}
     >
+      {/* Previous Nav Arrow */}
+      {hasPrev && onPrev && (
+        <button
+          onClick={e => {
+            e.stopPropagation();
+            onPrev();
+          }}
+          title="Previous (Left Arrow)"
+          className="hidden sm:flex absolute left-4 z-50 p-3 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-md border border-white/20 transition-all hover:scale-110 shadow-xl"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+      )}
+
+      {/* Next Nav Arrow */}
+      {hasNext && onNext && (
+        <button
+          onClick={e => {
+            e.stopPropagation();
+            onNext();
+          }}
+          title="Next (Right Arrow)"
+          className="hidden sm:flex absolute right-4 z-50 p-3 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-md border border-white/20 transition-all hover:scale-110 shadow-xl"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+      )}
+
+      {/* Modal Dialog Container */}
       <div
         onClick={e => e.stopPropagation()}
-        className="relative w-full max-w-5xl max-h-[92vh] flex flex-col rounded-3xl overflow-hidden bg-[#101010] text-white border border-white/15 shadow-2xl"
+        className={`relative w-full flex flex-col rounded-2xl bg-[#0d0d11] text-white border border-white/10 shadow-2xl overflow-hidden transition-all duration-300 ${
+          isVertical
+            ? 'max-w-[480px] max-h-[94vh]'
+            : 'max-w-[960px] max-h-[94vh]'
+        }`}
       >
-        {/* Header Bar */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/10 bg-[#161616]/70 backdrop-blur-md">
-          <div className="flex items-center gap-2.5">
-            <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-white/10 text-white border border-white/15 uppercase tracking-wider">
-              {platformLabel}
-            </span>
-            {video.category && (
-              <span className="hidden sm:inline-block px-2.5 py-1 text-xs font-medium rounded-full bg-blue-500/15 text-blue-300 border border-blue-500/25">
-                {video.category}
-              </span>
-            )}
-            <h2 className="text-sm sm:text-base font-semibold truncate max-w-[200px] sm:max-w-md">
-              {video.title}
-            </h2>
-          </div>
+        {/* ======================================================== */}
+        {/* 3. MODAL HEADER: Title and close button only */}
+        {/* ======================================================== */}
+        <div className="flex items-center justify-between px-4 sm:px-5 py-3 border-b border-white/10 bg-[#141418] z-20">
+          <h2 className="text-sm sm:text-base font-semibold truncate pr-3 text-neutral-100">
+            {video.title}
+          </h2>
 
-          <div className="flex items-center gap-2">
-            {video.videoSrc && (
-              <button
-                onClick={() => setShowEmbed(!showEmbed)}
-                className="px-2.5 py-1 text-xs font-medium rounded-lg bg-white/10 hover:bg-white/20 text-neutral-200 transition-colors hidden sm:block"
-              >
-                {showEmbed ? 'Watch Video File' : 'View Social Post Embed'}
-              </button>
-            )}
-
-            <button
-              onClick={handleCopyLink}
-              title="Copy original link"
-              className="p-2 rounded-full hover:bg-white/10 text-neutral-300 hover:text-white transition-colors"
-            >
-              {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
-            </button>
-
-            <button
-              onClick={onClose}
-              title="Close (Esc)"
-              className="p-2 rounded-full hover:bg-white/10 text-neutral-300 hover:text-white transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
+          <button
+            onClick={onClose}
+            title="Close (Esc)"
+            className="p-1.5 rounded-full hover:bg-white/10 text-neutral-400 hover:text-white transition-colors flex-shrink-0"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
-        {/* Content View */}
-        <div className="relative flex-1 min-h-[300px] sm:min-h-[420px] max-h-[64vh] bg-black flex items-center justify-center overflow-hidden">
-          {hasPrev && onPrev && (
-            <button
-              onClick={onPrev}
-              title="Previous (Left Arrow)"
-              className="absolute left-3 sm:left-4 z-20 p-2.5 sm:p-3 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-md border border-white/20 transition-all hover:scale-110 shadow-lg"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
+        {/* ======================================================== */}
+        {/* 1 & 2. MEDIA PLAYER VIEWPORT */}
+        {/* ======================================================== */}
+        <div
+          className={`relative w-full flex items-center justify-center bg-black overflow-hidden ${
+            isVertical ? 'h-[75vh] sm:h-[82vh] max-h-[760px]' : 'aspect-[16/9]'
+          }`}
+        >
+          {/* Vertical Backdrop: Blurred Thumbnail on both sides */}
+          {isVertical && (
+            <div
+              className="absolute inset-0 bg-cover bg-center filter blur-3xl opacity-30 scale-125 pointer-events-none"
+              style={{ backgroundImage: `url(${video.thumbnail})` }}
+            />
           )}
 
-          {hasNext && onNext && (
-            <button
-              onClick={onNext}
-              title="Next (Right Arrow)"
-              className="absolute right-3 sm:right-4 z-20 p-2.5 sm:p-3 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-md border border-white/20 transition-all hover:scale-110 shadow-lg"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          )}
-
-          {!showEmbed && video.videoSrc ? (
-            <div className="relative w-full h-full flex items-center justify-center bg-black group/player">
-              <video
-                ref={videoPlayerRef}
-                src={video.videoSrc}
-                poster={video.thumbnail}
-                autoPlay
-                playsInline
-                loop
-                onTimeUpdate={handleTimeUpdate}
-                onClick={togglePlay}
-                className="max-h-[64vh] w-auto max-w-full object-contain cursor-pointer"
+          {/* REAL PLAYER LOGIC */}
+          {video.videoSrc ? (
+            /* 1. Real <video> with native controls, muted autoplay */
+            <video
+              ref={videoPlayerRef}
+              src={video.videoSrc}
+              poster={video.thumbnail}
+              controls
+              playsInline
+              preload="metadata"
+              autoPlay
+              muted
+              className="relative z-10 w-full h-full object-contain"
+            />
+          ) : isPostUrlValid && tweetId ? (
+            /* 2a. Official X Embed */
+            <div className="relative z-10 w-full h-full overflow-y-auto p-4 flex items-center justify-center bg-black">
+              <div ref={tweetEmbedContainerRef} className="w-full max-w-[460px] mx-auto" />
+            </div>
+          ) : isPostUrlValid && instagramEmbedUrl ? (
+            /* 2b. Official Instagram Embed */
+            <div className="relative z-10 w-full h-full flex items-center justify-center bg-black">
+              <iframe
+                title={video.title}
+                src={instagramEmbedUrl}
+                className="w-full h-full max-w-[460px] border-none"
+                allowFullScreen
               />
-
-              {!isPlaying && (
-                <div
-                  onClick={togglePlay}
-                  className="absolute inset-0 flex items-center justify-center bg-black/30 cursor-pointer"
-                >
-                  <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white shadow-xl hover:scale-110 transition-transform">
-                    <Play className="w-8 h-8 fill-white ml-1" />
-                  </div>
-                </div>
-              )}
-
-              <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col gap-2 opacity-95 group-hover/player:opacity-100 transition-opacity">
-                <div
-                  onClick={handleSeek}
-                  className="w-full h-1.5 hover:h-2.5 bg-white/25 rounded-full cursor-pointer overflow-hidden transition-all relative"
-                >
-                  <div
-                    className="h-full bg-white transition-all duration-100 rounded-full"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-
-                <div className="flex items-center justify-between text-xs text-neutral-300">
-                  <div className="flex items-center gap-3">
-                    <button onClick={togglePlay} className="hover:text-white transition-colors">
-                      {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                    </button>
-                    <button onClick={toggleMute} className="hover:text-white transition-colors">
-                      {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-                    </button>
-                    <span className="text-[11px] font-mono text-neutral-400">
-                      Duration: {video.duration}
-                    </span>
-                  </div>
-
-                  <button
-                    onClick={() => {
-                      if (videoPlayerRef.current) {
-                        if (document.fullscreenElement) {
-                          document.exitFullscreen();
-                        } else {
-                          videoPlayerRef.current.requestFullscreen();
-                        }
-                      }
-                    }}
-                    className="hover:text-white transition-colors"
-                  >
-                    <Maximize2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
             </div>
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center p-4 bg-[#0a0a0a] overflow-y-auto">
-              {tweetId ? (
-                <iframe
-                  title={video.title}
-                  src={`https://platform.twitter.com/embed/Tweet.html?id=${tweetId}&theme=dark`}
-                  className="w-full max-w-[500px] h-[480px] border-none rounded-xl"
-                  allowFullScreen
-                />
-              ) : instagramEmbedUrl ? (
-                <iframe
-                  title={video.title}
-                  src={instagramEmbedUrl}
-                  className="w-full max-w-[450px] h-[520px] border-none rounded-xl"
-                  allowFullScreen
-                />
-              ) : (
-                <div className="max-w-md p-6 rounded-2xl bg-[#141414] border border-white/10 flex flex-col items-center gap-4 text-center">
-                  <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
-                    <ExternalLink className="w-6 h-6 text-neutral-200" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-lg text-white mb-1">{video.title}</h4>
-                    <p className="text-xs text-neutral-400">
-                      Live post on {platformLabel}. Click below to view the authentic post on {platformLabel}.
-                    </p>
-                  </div>
-                  <a
-                    href={video.postUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-2.5 px-5 rounded-full bg-white text-black font-semibold text-sm hover:bg-neutral-200 transition-colors flex items-center justify-center gap-2"
-                  >
-                    <span>Open on {platformLabel}</span>
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
-                </div>
+            /* 3. Static thumbnail without fake controls + Open on X CTA */
+            <div className="relative z-10 w-full h-full flex flex-col items-center justify-center p-4">
+              <img
+                src={video.thumbnail}
+                alt={video.title}
+                className="max-h-[70%] max-w-[90%] object-contain rounded-lg shadow-lg"
+              />
+              {isPostUrlValid && (
+                <a
+                  href={video.postUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-black font-semibold text-xs sm:text-sm hover:bg-neutral-200 transition-colors shadow-md"
+                >
+                  <span>Open on {platformDisplayName}</span>
+                  <ExternalLink className="w-4 h-4" />
+                </a>
               )}
             </div>
           )}
         </div>
 
-        {/* Bottom Details Footer */}
-        <div className="px-5 py-4 border-t border-white/10 bg-[#121212] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-xs sm:text-sm text-neutral-300">
-            <div className="flex items-center gap-1.5" title="Total Views">
-              <Eye className="w-4 h-4 text-neutral-400" />
+        {/* ======================================================== */}
+        {/* 3. MODAL FOOTER: views, likes, comments, reposts, date, button */}
+        {/* ======================================================== */}
+        <div className="px-4 sm:px-5 py-3 border-t border-white/10 bg-[#121216] z-20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-5 text-xs text-neutral-300">
+            {/* Views */}
+            <div className="flex items-center gap-1.5" title={`${video.views.toLocaleString()} views`}>
+              <Eye className="w-3.5 h-3.5 text-neutral-400" />
               <span className="font-semibold text-white">{formatNumber(video.views)}</span>
               <span className="text-neutral-500">views</span>
             </div>
 
-            <div className="flex items-center gap-1.5" title="Total Likes">
-              <Heart className="w-4 h-4 text-rose-400" />
+            {/* Likes */}
+            <div className="flex items-center gap-1.5" title={`${video.likes.toLocaleString()} likes`}>
+              <Heart className="w-3.5 h-3.5 text-rose-400" />
               <span className="font-semibold text-white">{formatNumber(video.likes)}</span>
-              <span className="text-neutral-500">likes</span>
             </div>
 
-            <div className="flex items-center gap-1.5" title="Total Reposts">
-              <Repeat className="w-4 h-4 text-emerald-400" />
+            {/* Comments (New) */}
+            {video.comments !== undefined && (
+              <div className="flex items-center gap-1.5" title={`${video.comments.toLocaleString()} comments`}>
+                <MessageCircle className="w-3.5 h-3.5 text-sky-400" />
+                <span className="font-semibold text-white">{formatNumber(video.comments)}</span>
+              </div>
+            )}
+
+            {/* Reposts */}
+            <div className="flex items-center gap-1.5" title={`${video.reposts.toLocaleString()} reposts`}>
+              <Repeat className="w-3.5 h-3.5 text-emerald-400" />
               <span className="font-semibold text-white">{formatNumber(video.reposts)}</span>
-              <span className="text-neutral-500">reposts</span>
             </div>
 
+            {/* Date */}
             {video.date && (
-              <div className="flex items-center gap-1.5 text-neutral-500">
-                <Calendar className="w-3.5 h-3.5" />
+              <div className="hidden sm:flex items-center gap-1.5 text-neutral-500">
+                <Calendar className="w-3 h-3" />
                 <span>{video.date}</span>
               </div>
             )}
           </div>
 
-          <a
-            href={video.postUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white text-xs sm:text-sm font-medium transition-colors"
-          >
-            <span>Open on {video.platform === 'x' ? 'X (Twitter)' : video.platform === 'instagram' ? 'Instagram' : 'Platform'}</span>
-            <ExternalLink className="w-3.5 h-3.5" />
-          </a>
+          {/* One "Open on [Platform]" Button */}
+          {isPostUrlValid && (
+            <a
+              href={video.postUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white text-xs font-semibold transition-colors self-end sm:self-auto"
+            >
+              <span>Open on {platformDisplayName}</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          )}
         </div>
       </div>
     </div>
