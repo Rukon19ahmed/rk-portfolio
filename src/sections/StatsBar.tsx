@@ -32,7 +32,7 @@ export const StatsBar: React.FC = () => {
   }, [hasAnimated]);
 
   return (
-    <div ref={containerRef} className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 -mt-2 sm:-mt-4 mb-12 sm:mb-16 relative z-20">
+    <div ref={containerRef} className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 -mt-8 sm:-mt-10 md:-mt-12 mb-12 sm:mb-16 relative z-20">
       <div className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 bg-white dark:bg-[#101010] border border-black/8 dark:border-white/10 shadow-card-light dark:shadow-card-dark backdrop-blur-md">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-0 divide-y lg:divide-y-0 lg:divide-x divide-black/5 dark:divide-white/10">
           {stats.map((stat, idx) => (

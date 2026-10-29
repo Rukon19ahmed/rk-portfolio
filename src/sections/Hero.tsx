@@ -10,15 +10,39 @@ interface HeroProps {
 export const Hero: React.FC<HeroProps> = ({ onWatchShowreel }) => {
   const { theme } = useTheme();
 
-  const heroImageSrc = theme === 'dark' ? profileData.images.heroDark : profileData.images.heroLight;
-
   return (
-    <section id="home" className="relative pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 overflow-hidden">
-      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 items-center">
+    <section
+      id="home"
+      className="relative min-h-[560px] md:min-h-[640px] lg:min-h-[680px] pt-24 sm:pt-28 md:pt-32 pb-8 sm:pb-12 overflow-hidden flex items-center"
+    >
+      {/* ======================================================== */}
+      {/* 4. DECORATIVE BACKDROP LAYER BEHIND CUTOUT */}
+      {/* ======================================================== */}
+      <div className="absolute inset-0 pointer-events-none select-none z-0 overflow-hidden">
+        {/* Soft Radial Glow behind person's head & shoulders */}
+        <div
+          className="absolute right-0 top-1/4 sm:top-1/6 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] rounded-full blur-3xl transition-opacity duration-500 opacity-80"
+          style={{
+            background:
+              theme === 'dark'
+                ? 'radial-gradient(circle, rgba(255, 255, 255, 0.10) 0%, transparent 70%)'
+                : 'radial-gradient(circle, rgba(0, 0, 0, 0.06) 0%, transparent 70%)',
+          }}
+        />
+
+        {/* Big faint outlined text "CREATIVE" behind the shoulder */}
+        <div className="absolute right-[-20px] sm:right-6 top-1/4 sm:top-1/3 font-heading font-black text-[90px] sm:text-[140px] lg:text-[200px] leading-none tracking-tighter text-black/[0.06] dark:text-white/[0.05] uppercase select-none">
+          CREATIVE
+        </div>
+      </div>
+
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4 items-center">
           
-          {/* Left Column: Headline, Subtitle, CTA & Badges */}
-          <div className="lg:col-span-7 flex flex-col z-10">
+          {/* ======================================================== */}
+          {/* LEFT COLUMN: Text, Buttons, Badges (about 50%) */}
+          {/* ======================================================== */}
+          <div className="lg:col-span-7 xl:col-span-6 flex flex-col z-20">
             {/* Small uppercase category badge */}
             <div className="mb-3 sm:mb-4">
               <span className="text-[11px] sm:text-[12px] font-semibold tracking-[0.2em] uppercase text-neutral-500 dark:text-neutral-400">
@@ -41,7 +65,6 @@ export const Hero: React.FC<HeroProps> = ({ onWatchShowreel }) => {
 
             {/* CTA Buttons */}
             <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-9 sm:mb-12">
-              {/* Watch Showreel */}
               <button
                 onClick={onWatchShowreel}
                 className="inline-flex items-center gap-2.5 px-5 sm:px-6 py-3 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 bg-black text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200 shadow-md hover:scale-[1.02] active:scale-[0.98]"
@@ -52,7 +75,6 @@ export const Hero: React.FC<HeroProps> = ({ onWatchShowreel }) => {
                 <span>Watch Showreel</span>
               </button>
 
-              {/* Contact Me */}
               <a
                 href="#contact"
                 className="inline-flex items-center gap-2 px-5 sm:px-6 py-3 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 bg-white/80 dark:bg-white/5 border border-black/15 dark:border-white/15 text-neutral-900 dark:text-neutral-100 hover:bg-black/5 dark:hover:bg-white/10 hover:border-black/30 dark:hover:border-white/30"
@@ -80,33 +102,59 @@ export const Hero: React.FC<HeroProps> = ({ onWatchShowreel }) => {
             </div>
           </div>
 
-          {/* Right Column: Hero Workspace Image + Quote & Signature */}
-          <div className="lg:col-span-5 relative mt-4 lg:mt-0">
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-black/10 dark:border-white/10 bg-neutral-900 aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/3] max-w-lg mx-auto">
-              {/* Background Editor Image */}
-              <img
-                src={heroImageSrc}
-                alt="RK Creative workspace setup with video timeline"
-                className="w-full h-full object-cover object-center transition-all duration-700"
-              />
+          {/* ======================================================== */}
+          {/* RIGHT COLUMN: FRAMELESS TRANSPARENT CUTOUT (about 50%) */}
+          {/* No card box, no border, no shadow, no rounded frame */}
+          {/* ======================================================== */}
+          <div className="lg:col-span-5 xl:col-span-6 relative flex flex-col justify-end items-center lg:items-end min-h-[380px] sm:min-h-[460px] lg:min-h-[580px] mt-4 lg:mt-0 z-10">
+            
+            {/* 5. Separate Handwritten Quote at Top Right (Rotated -6deg) */}
+            <div className="absolute top-0 right-2 sm:right-6 lg:right-4 z-20 text-right select-none pointer-events-none">
+              <p className="font-script text-base sm:text-xl lg:text-2xl font-bold leading-tight text-[#111111] dark:text-white drop-shadow-sm transform rotate-[-6deg] transition-colors duration-300">
+                "Edit.<br />Create.<br />Explore.<br />Repeat."
+              </p>
+            </div>
 
-              {/* Dark/Light Edge Gradients for Cinematic Feel */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 dark:from-[#070707]/90 dark:via-transparent dark:to-transparent pointer-events-none" />
+            {/* Cutout Image Container anchored bottom-right */}
+            <div className="relative w-full flex justify-center lg:justify-end items-end">
+              
+              {/* Soft contact shadow ellipse under the person */}
+              <div className="absolute -bottom-2 right-1/2 translate-x-1/2 lg:translate-x-0 lg:right-8 w-60 sm:w-80 lg:w-96 h-10 bg-black/25 dark:bg-black/60 rounded-full blur-xl pointer-events-none" />
 
-              {/* Top Right Handwritten Script Quote */}
-              <div className="absolute top-4 right-5 sm:top-6 sm:right-6 text-right select-none pointer-events-none">
-                <p className="font-script text-white text-lg sm:text-2xl font-bold leading-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] opacity-90 transform rotate-[-3deg]">
-                  "Edit.<br />Create.<br />Explore.<br />Repeat."
-                </p>
-              </div>
+              {/* Cutout Photo with Alpha Transparency */}
+              <picture
+                className="relative block w-[85%] sm:w-[65%] md:w-[55%] lg:w-[95%] xl:w-[90%] max-w-[520px]"
+                style={{
+                  maskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)',
+                  WebkitMaskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)',
+                }}
+              >
+                <source srcSet="/images/hero-cutout.webp" type="image/webp" />
+                <img
+                  src="/images/hero-cutout.png"
+                  alt="Md Rukon Kholifa (RK) editing at workstation"
+                  loading="eager"
+                  fetchPriority="high"
+                  width={760}
+                  height={540}
+                  className="w-full h-auto object-contain object-bottom select-none pointer-events-none transition-all duration-300 ease-out"
+                  style={{
+                    filter:
+                      theme === 'dark'
+                        ? 'grayscale(1) contrast(1.1) brightness(0.9)'
+                        : 'none',
+                  }}
+                />
+              </picture>
 
-              {/* Bottom Right Handwritten Signature */}
-              <div className="absolute bottom-4 right-5 sm:bottom-5 sm:right-6 text-right select-none pointer-events-none">
-                <span className="font-signature text-2xl sm:text-3xl text-white/90 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] italic tracking-wider">
-                  R.K. Creative
+              {/* 5. Separate Handwritten Signature at Bottom Right */}
+              <div className="absolute bottom-6 right-2 sm:right-6 lg:right-0 z-20 text-right select-none pointer-events-none">
+                <span className="font-signature text-2xl sm:text-3xl lg:text-4xl text-[#111111] dark:text-white drop-shadow-sm italic tracking-wider transition-colors duration-300">
+                  RK Creative
                 </span>
               </div>
             </div>
+
           </div>
 
         </div>
@@ -114,4 +162,3 @@ export const Hero: React.FC<HeroProps> = ({ onWatchShowreel }) => {
     </section>
   );
 };
-

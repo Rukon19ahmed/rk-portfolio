@@ -36,8 +36,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           {/* Left: Logo & Tagline */}
           <div className="flex flex-col items-center md:items-start text-center md:text-left">
             <div className="flex items-center gap-2 mb-1">
-              <div className="w-6 h-6 rounded-md bg-black dark:bg-white text-white dark:text-black flex items-center justify-center font-black text-xs font-heading">
-                RK
+              <div className="w-6 h-6 rounded-md overflow-hidden flex items-center justify-center border border-white/10">
+                <img src="/logo/rk-logo.png" alt="RK Logo" className="w-full h-full object-cover" />
               </div>
               <span className="font-heading font-black tracking-tight text-sm uppercase text-black dark:text-white">
                 {profileData.brandName}

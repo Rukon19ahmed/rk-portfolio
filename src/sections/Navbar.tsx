@@ -96,8 +96,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           }}
           className="flex items-center gap-2.5 group cursor-pointer"
         >
-          <div className="w-8 h-8 rounded-lg bg-black dark:bg-white text-white dark:text-black flex items-center justify-center font-black tracking-tighter text-sm transition-transform duration-300 group-hover:scale-105">
-            <span className="font-heading tracking-tighter">RK</span>
+          <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center transition-transform duration-300 group-hover:scale-105 shadow-sm border border-white/10">
+            <img src="/logo/rk-logo.png" alt="RK Logo" className="w-full h-full object-cover" />
           </div>
           <span className="font-heading font-black tracking-tight text-base sm:text-lg text-black dark:text-white uppercase">
             {profileData.brandName}
