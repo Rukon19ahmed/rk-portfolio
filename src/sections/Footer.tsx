@@ -1,73 +1,46 @@
 import React from 'react';
 import { profileData } from '../data/profile';
+import { XIcon, InstagramIcon } from '../components/SocialIcons';
 
-interface FooterProps {
-  onNavigate?: (route: string) => void;
-}
-
-export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
-  const navLinks = [
-    { label: 'Home', href: '#home' },
-    { label: 'Videos', href: '#videos' },
-    { label: 'AI Creations', href: '#ai-creations' },
-    { label: 'Projects', href: '#projects' },
-    { label: 'About', href: '#about' },
-    { label: 'Contact', href: '#contact' },
-  ];
-
-  const handleLinkClick = (href: string) => {
-    if (onNavigate) {
-      onNavigate('home');
-      setTimeout(() => {
-        const el = document.querySelector(href);
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      }, 50);
-    } else {
-      const el = document.querySelector(href);
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
+export const Footer: React.FC = () => {
   return (
-    <footer className="py-8 sm:py-10 border-t border-black/8 dark:border-white/10 mt-8 bg-transparent">
-      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+    <footer id="footer" className="py-12 sm:py-16 mt-20 border-t border-black/[0.04] dark:border-white/[0.06] bg-transparent">
+      <div className="max-w-[1440px] mx-auto px-6 sm:px-12 lg:px-24">
+        {/* One quiet line */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           
-          {/* Left: Logo & Tagline */}
-          <div className="flex flex-col items-center md:items-start text-center md:text-left">
-            <div className="flex items-center gap-2 mb-1">
-              <div className="w-6 h-6 rounded-md overflow-hidden flex items-center justify-center border border-white/10">
-                <img src="/logo/rk-logo.png" alt="RK Logo" className="w-full h-full object-cover" />
-              </div>
-              <span className="font-heading font-black tracking-tight text-sm uppercase text-black dark:text-white">
-                {profileData.brandName}
-              </span>
-            </div>
-            <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
-              Video Editor | AI Creator | Visual Storyteller
-            </p>
+          {/* Left: Brand name */}
+          <div className="font-sans font-medium text-sm text-black dark:text-white">
+            {profileData.brand}
           </div>
 
-          {/* Center: Nav Links */}
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs font-medium text-neutral-600 dark:text-neutral-400">
-            {navLinks.map(link => (
+          {/* Right: Social icons + Tiny copyright */}
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4 text-neutral-500 dark:text-[#9a9a9a]">
               <a
-                key={link.label}
-                href={link.href}
-                onClick={e => {
-                  e.preventDefault();
-                  handleLinkClick(link.href);
-                }}
+                href={profileData.x}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="X (Twitter)"
                 className="hover:text-black dark:hover:text-white transition-colors"
               >
-                {link.label}
+                <XIcon className="w-4 h-4" />
               </a>
-            ))}
-          </div>
 
-          {/* Right: Copyright */}
-          <div className="text-xs text-neutral-500 dark:text-neutral-500 text-center md:text-right">
-            © 2026 {profileData.brandName}. All rights reserved.
+              <a
+                href={profileData.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="hover:text-black dark:hover:text-white transition-colors"
+              >
+                <InstagramIcon className="w-4 h-4" />
+              </a>
+            </div>
+
+            <span className="text-xs text-neutral-400 dark:text-neutral-600">
+              © 2026
+            </span>
           </div>
 
         </div>
@@ -75,4 +48,3 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
     </footer>
   );
 };
-

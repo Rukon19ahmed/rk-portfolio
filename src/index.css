@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter+Tight:wght@600;700;800;900&family=Inter:wght@400;500;600;700&family=Mrs+Saint+Delafield&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -12,13 +12,13 @@
   }
 
   body {
-    @apply font-sans transition-colors duration-200;
+    @apply font-sans transition-colors duration-300;
   }
 
   /* Custom subtle scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
 
   ::-webkit-scrollbar-track {
@@ -26,11 +26,19 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-neutral-700/40 rounded-full hover:bg-neutral-600/60;
+    @apply bg-neutral-500/20 rounded-full hover:bg-neutral-500/40;
   }
 }
 
-/* Hide scrollbar for tabs / carousel */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }

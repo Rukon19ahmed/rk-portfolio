@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import type { StatItem } from '../data/stats';
-import { getComputedStats } from '../data/stats';
+import { getStats } from '../data/stats';
 import { formatNumber } from '../utils/formatters';
-import { Eye, Video, Heart, Repeat } from 'lucide-react';
-import { XIcon } from '../components/SocialIcons';
 
 export const StatsBar: React.FC = () => {
   const [stats, setStats] = useState<StatItem[]>([]);
@@ -11,17 +9,17 @@ export const StatsBar: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    setStats(getComputedStats());
+    setStats(getStats());
   }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      entries => {
+      (entries) => {
         if (entries[0].isIntersecting && !hasAnimated) {
           setHasAnimated(true);
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.3 }
     );
 
     if (containerRef.current) {
@@ -32,56 +30,36 @@ export const StatsBar: React.FC = () => {
   }, [hasAnimated]);
 
   return (
-    <div ref={containerRef} className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 -mt-8 sm:-mt-10 md:-mt-12 mb-12 sm:mb-16 relative z-20">
-      <div className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 bg-white dark:bg-[#101010] border border-black/8 dark:border-white/10 shadow-card-light dark:shadow-card-dark backdrop-blur-md">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-0 divide-y lg:divide-y-0 lg:divide-x divide-black/5 dark:divide-white/10">
-          {stats.map((stat, idx) => (
-            <div
-              key={stat.id}
-              className={`flex items-center gap-3.5 sm:gap-4 px-3 sm:px-5 ${
-                idx > 0 && idx % 2 === 0 ? 'pt-4 sm:pt-0' : ''
-              } ${idx > 0 ? 'lg:pl-6' : ''}`}
-            >
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 flex items-center justify-center flex-shrink-0 text-black dark:text-white">
-                {stat.icon === 'x' && <XIcon className="w-4 h-4 sm:w-5 sm:h-5" />}
-                {stat.icon === 'eye' && <Eye className="w-4 h-4 sm:w-5 sm:h-5 text-sky-500 dark:text-sky-400" />}
-                {stat.icon === 'video' && <Video className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-500 dark:text-indigo-400" />}
-                {stat.icon === 'heart' && <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500 dark:text-rose-400" />}
-                {stat.icon === 'repeat' && <Repeat className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500 dark:text-emerald-400" />}
-              </div>
-
-              <div className="flex flex-col">
-                <span className="font-heading font-black text-xl sm:text-2xl lg:text-[26px] tracking-tight text-black dark:text-white leading-tight">
-                  <AnimatedCounter
-                    targetValue={stat.value}
-                    displayOverride={stat.displayOverride}
-                    animate={hasAnimated}
-                  />
-                </span>
-                <span className="text-[11px] sm:text-[12px] font-medium text-neutral-500 dark:text-neutral-400 whitespace-nowrap">
-                  {stat.label}
-                </span>
-              </div>
+    <section ref={containerRef} className="py-12 sm:py-16 lg:py-20 relative z-20">
+      <div className="max-w-[1440px] mx-auto px-6 sm:px-12 lg:px-24">
+        {/* One thin line, no card, no boxes, no icons */}
+        <div className="flex flex-wrap items-baseline gap-10 sm:gap-16 lg:gap-28">
+          {stats.map((stat) => (
+            <div key={stat.id} className="flex items-baseline gap-2.5">
+              <span className="font-sans font-semibold text-3xl sm:text-4xl md:text-5xl tracking-[-0.02em] text-black dark:text-white leading-none">
+                <AnimatedValue
+                  targetValue={stat.value}
+                  displayOverride={stat.displayOverride}
+                  animate={hasAnimated}
+                />
+              </span>
+              <span className="font-sans font-normal text-xs sm:text-sm text-neutral-500 dark:text-[#9a9a9a]">
+                {stat.label}
+              </span>
             </div>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
-interface CounterProps {
+const AnimatedValue: React.FC<{
   targetValue: number;
   displayOverride?: string;
   animate: boolean;
-}
-
-const AnimatedCounter: React.FC<CounterProps> = ({
-  targetValue,
-  displayOverride,
-  animate,
-}) => {
-  const [current, setCurrent] = useState(0);
+}> = ({ targetValue, displayOverride, animate }) => {
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
     if (!animate) return;
@@ -95,10 +73,10 @@ const AnimatedCounter: React.FC<CounterProps> = ({
     const timer = setInterval(() => {
       start += increment;
       if (start >= targetValue) {
-        setCurrent(targetValue);
+        setCount(targetValue);
         clearInterval(timer);
       } else {
-        setCurrent(Math.floor(start));
+        setCount(Math.floor(start));
       }
     }, intervalTime);
 
@@ -106,9 +84,9 @@ const AnimatedCounter: React.FC<CounterProps> = ({
   }, [animate, targetValue]);
 
   if (displayOverride) {
-    if (!animate) return <span>0+</span>;
+    if (!animate) return <span>0</span>;
     return <span>{displayOverride}</span>;
   }
 
-  return <span>{formatNumber(animate ? current : 0)}+</span>;
+  return <span>{formatNumber(animate ? count : 0)}</span>;
 };

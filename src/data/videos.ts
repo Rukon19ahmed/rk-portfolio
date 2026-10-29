@@ -1,371 +1,211 @@
-export type PlatformType = "x" | "instagram" | "ai" | "project";
+export type PlatformType = "x" | "instagram";
 export type VideoOrientation = "vertical" | "horizontal";
 
 export interface VideoItem {
   id: string;
+  title: string; // 3 to 6 words, Title Case, no emoji, no hashtags
   platform: PlatformType;
-  title: string;
-  caption?: string;
-  orientation: VideoOrientation;
-  thumbnail: string;
-  duration?: string;
-  videoSrc?: string;
   postUrl: string;
-  views: number;
-  likes: number;
+  thumbnail: string; // /thumbnails/xxx.webp (clean frame, no baked-in text)
+  videoSrc?: string; // Optional local mp4 in /public/videos
+  orientation: VideoOrientation;
+  views?: number;
+  likes?: number;
   comments?: number;
-  reposts: number;
-  date: string;
-  category?: "Documentary" | "Commercial" | "Travel Film" | "Gaming Edit" | string;
-  featured: boolean;
-  tags: string[];
+  reposts?: number;
+  duration?: string;
+  caption?: string;
+  date?: string;
 }
 
 export const videosData: VideoItem[] = [
   // -------------------------------------------------------------
-  // REAL DATA TEMPLATE (Added per user request)
+  // X (TWITTER) POSTS - Real links from profile
   // -------------------------------------------------------------
   {
-    id: "renoise-halloween-goat",
+    id: "x-post-1",
+    title: "Visual Narrative and Motion Breakdown", // TODO: replace with your real post title
     platform: "x",
-    title: "Renoise AI | Halloween Goat",
-    caption: "Renoise AI gave my goat a pumpkin mask, a vampire cape and a bat squad. Wait for the last 3 seconds.",
-    orientation: "vertical",
-    postUrl: "TODO: paste real X post link",
-    thumbnail: "/thumbnails/renoise-goat.webp",
-    videoSrc: "/videos/renoise-goat.mp4",
-    views: 11800,
-    likes: 351,
-    comments: 116,
-    reposts: 30,
-    date: "2026-10-28",
-    featured: true,
-    tags: ["Renoise AI", "Halloween", "AI Video", "Goat Animation"],
-  },
-
-  // -------------------------------------------------------------
-  // LATEST FROM X (TWITTER) - Horizontal 16:9 Showcase Cards
-  // -------------------------------------------------------------
-  {
-    id: "x-messi",
-    platform: "x",
-    title: "Why Messi is Different? 🐐",
-    orientation: "horizontal",
-    thumbnail: "/thumbnails/x-messi.webp",
-    duration: "1:20",
-    videoSrc: "/videos/x-messi.mp4",
     postUrl: "https://x.com/Rukon__Kholifa/status/2115483653782511988",
-    views: 2400000,
-    likes: 48000,
-    comments: 1420,
-    reposts: 6200,
+    thumbnail: "/thumbnails/x-post-1.webp",
+    orientation: "horizontal",
+    views: 2400000, // TODO: update with real view count
+    likes: 48000,   // TODO: update with real likes count
+    comments: 1420, // TODO: update with real comments count
+    reposts: 6200,  // TODO: update with real reposts count
+    duration: "1:20",
     date: "2026-10-24",
-    featured: true,
-    tags: ["Sports", "Storytelling", "Messi", "Viral Edit"],
   },
   {
-    id: "x-ai-couple",
+    id: "x-post-2",
+    title: "Cinematic Atmosphere and World Design", // TODO: replace with your real post title
     platform: "x",
-    title: "AI Couple | Part 1",
-    orientation: "horizontal",
-    thumbnail: "/thumbnails/x-ai-couple.webp",
-    duration: "0:42",
-    videoSrc: "/videos/x-ai-couple.mp4",
     postUrl: "https://x.com/Rukon__Kholifa/status/2115375486348280062",
+    thumbnail: "/thumbnails/x-post-2.webp",
+    orientation: "horizontal",
     views: 1100000,
     likes: 32000,
     comments: 890,
     reposts: 4800,
+    duration: "0:42",
     date: "2026-10-20",
-    featured: true,
-    tags: ["AI Narrative", "Character Animation", "Midjourney", "Runway"],
   },
   {
-    id: "x-2am",
+    id: "x-post-3",
+    title: "Night Sequence Lighting and Sound", // TODO: replace with your real post title
     platform: "x",
-    title: "Life Hits Different at 2AM",
-    orientation: "horizontal",
-    thumbnail: "/thumbnails/x-2am.webp",
-    duration: "0:38",
-    videoSrc: "/videos/x-2am.mp4",
     postUrl: "https://x.com/Rukon__Kholifa/status/2115112537314463749",
+    thumbnail: "/thumbnails/x-post-3.webp",
+    orientation: "horizontal",
     views: 980000,
     likes: 28000,
     comments: 730,
     reposts: 3100,
+    duration: "0:38",
     date: "2026-10-18",
-    featured: true,
-    tags: ["Cinematic", "Atmospheric", "Sound Design", "Mood"],
   },
   {
-    id: "x-untold",
+    id: "x-post-4",
+    title: "Historical Archival Story Edit", // TODO: replace with your real post title
     platform: "x",
-    title: "The Real Story Behind...",
-    orientation: "horizontal",
-    thumbnail: "/thumbnails/x-untold.webp",
-    duration: "1:18",
-    videoSrc: "/videos/x-untold.mp4",
     postUrl: "https://x.com/Rukon__Kholifa/status/2114988943095840998",
+    thumbnail: "/thumbnails/x-post-4.webp",
+    orientation: "horizontal",
     views: 840000,
     likes: 21000,
     comments: 540,
     reposts: 3500,
+    duration: "1:18",
     date: "2026-10-14",
-    featured: true,
-    tags: ["Mini Documentary", "Historical", "Voiceover", "After Effects"],
   },
   {
-    id: "x-halloween",
+    id: "x-post-5",
+    title: "Creative Visual Experiments in Motion", // TODO: replace with your real post title
     platform: "x",
-    title: "Halloween AI Edit 🎃",
-    orientation: "horizontal",
-    thumbnail: "/thumbnails/x-halloween.webp",
-    duration: "0:36",
-    videoSrc: "/videos/x-halloween.mp4",
     postUrl: "https://x.com/Rukon__Kholifa/status/2110989958823756114",
+    thumbnail: "/thumbnails/x-post-5.webp",
+    orientation: "horizontal",
     views: 610000,
     likes: 18000,
     comments: 420,
     reposts: 2400,
+    duration: "0:36",
     date: "2026-10-27",
-    featured: true,
-    tags: ["Halloween", "VFX", "AI Horror", "Sound Effects"],
+  },
+  {
+    id: "x-post-6",
+    title: "Mythical Scale Scene Generation", // TODO: replace with your real post title
+    platform: "x",
+    postUrl: "https://x.com/Rukon__Kholifa/status/2105548109296304187",
+    thumbnail: "/thumbnails/x-post-6.webp",
+    orientation: "horizontal",
+    views: 520000,
+    likes: 15000,
+    comments: 310,
+    reposts: 1900,
+    duration: "0:45",
+    date: "2026-10-10",
+  },
+  {
+    id: "x-post-7",
+    title: "Floral Aesthetics and Color Gradients", // TODO: replace with your real post title
+    platform: "x",
+    postUrl: "https://x.com/Rukon__Kholifa/status/2100911995096887367",
+    thumbnail: "/thumbnails/x-post-7.webp",
+    orientation: "horizontal",
+    views: 470000,
+    likes: 13000,
+    comments: 280,
+    reposts: 1600,
+    duration: "0:32",
+    date: "2026-10-05",
+  },
+  {
+    id: "x-post-8",
+    title: "Futuristic Metropolis Perspective Shift", // TODO: replace with your real post title
+    platform: "x",
+    postUrl: "https://x.com/Rukon__Kholifa/status/2048830511230111751",
+    thumbnail: "/thumbnails/x-post-8.webp",
+    orientation: "horizontal",
+    views: 390000,
+    likes: 11000,
+    comments: 210,
+    reposts: 1400,
+    duration: "0:40",
+    date: "2026-09-28",
   },
 
   // -------------------------------------------------------------
-  // INSTAGRAM REELS (Vertical 9:16)
+  // INSTAGRAM REELS - Real links from profile
   // -------------------------------------------------------------
   {
-    id: "reel-city",
+    id: "reel-1",
+    title: "Urban Speed and Pacing Study", // TODO: replace with your real reel title
     platform: "instagram",
-    title: "Cyber City Rush",
-    orientation: "vertical",
-    thumbnail: "/thumbnails/reel-city.webp",
-    duration: "0:25",
-    videoSrc: "/videos/reel-city.mp4",
     postUrl: "https://www.instagram.com/p/DfEYLsFxNzs/",
+    thumbnail: "/thumbnails/reel-1.webp",
+    orientation: "vertical",
     views: 1300000,
     likes: 64000,
     comments: 980,
     reposts: 8200,
+    duration: "0:25",
     date: "2026-10-15",
-    featured: true,
-    tags: ["Reel", "Speed Ramp", "Urban", "Sound FX"],
   },
   {
-    id: "reel-portrait",
+    id: "reel-2",
+    title: "Portrait Color Separation Grade", // TODO: replace with your real reel title
     platform: "instagram",
-    title: "Aesthetic Portrait Grading",
-    orientation: "vertical",
-    thumbnail: "/thumbnails/reel-portrait.webp",
-    duration: "0:15",
-    videoSrc: "/videos/reel-portrait.mp4",
     postUrl: "https://www.instagram.com/p/DfC_hBJMI1N/",
+    thumbnail: "/thumbnails/reel-2.webp",
+    orientation: "vertical",
     views: 820000,
     likes: 42000,
     comments: 610,
     reposts: 5100,
+    duration: "0:15",
     date: "2026-10-12",
-    featured: true,
-    tags: ["Color Grading", "DaVinci Resolve", "Portrait"],
   },
   {
-    id: "reel-wings",
+    id: "reel-3",
+    title: "Backlit Silhouette Motion Effects", // TODO: replace with your real reel title
     platform: "instagram",
-    title: "Wings of Neon Silhouette",
-    orientation: "vertical",
-    thumbnail: "/thumbnails/reel-wings.webp",
-    duration: "0:30",
-    videoSrc: "/videos/reel-wings.mp4",
     postUrl: "https://www.instagram.com/p/Dd_gyKDhDPg/",
+    thumbnail: "/thumbnails/reel-3.webp",
+    orientation: "vertical",
     views: 640000,
     likes: 31000,
     comments: 480,
     reposts: 3900,
+    duration: "0:30",
     date: "2026-10-08",
-    featured: true,
-    tags: ["Motion Design", "Glow Effects", "Silhouette"],
   },
   {
-    id: "reel-football",
+    id: "reel-4",
+    title: "High Energy Rhythm Cut", // TODO: replace with your real reel title
     platform: "instagram",
-    title: "Number 10 Matchday Edit",
-    orientation: "vertical",
-    thumbnail: "/thumbnails/reel-football.webp",
-    duration: "0:22",
-    videoSrc: "/videos/reel-football.mp4",
     postUrl: "https://www.instagram.com/p/DeGe1gotieT/",
+    thumbnail: "/thumbnails/reel-4.webp",
+    orientation: "vertical",
     views: 510000,
     likes: 27000,
     comments: 390,
     reposts: 2900,
+    duration: "0:22",
     date: "2026-10-04",
-    featured: true,
-    tags: ["Sports Edit", "Sync Beat", "Football"],
   },
   {
-    id: "reel-katana",
+    id: "reel-5",
+    title: "Stylized Character Animation", // TODO: replace with your real reel title
     platform: "instagram",
-    title: "Blade Cyberpunk Animation",
-    orientation: "vertical",
-    thumbnail: "/thumbnails/reel-katana.webp",
-    duration: "0:18",
-    videoSrc: "/videos/reel-katana.mp4",
     postUrl: "https://www.instagram.com/p/DeNGpy1Nk1f/",
+    thumbnail: "/thumbnails/reel-5.webp",
+    orientation: "vertical",
     views: 420000,
     likes: 19000,
     comments: 260,
     reposts: 1800,
+    duration: "0:18",
     date: "2026-09-28",
-    featured: true,
-    tags: ["Anime 3D", "Cyberpunk", "Katana", "Audio Reactive"],
-  },
-
-  // -------------------------------------------------------------
-  // FEATURED AI CREATIONS (Vertical)
-  // -------------------------------------------------------------
-  {
-    id: "ai-dragon",
-    platform: "ai",
-    title: "The Mythical Colossus",
-    orientation: "vertical",
-    thumbnail: "/thumbnails/ai-dragon.webp",
-    duration: "0:45",
-    videoSrc: "/videos/ai-dragon.mp4",
-    postUrl: "https://x.com/Rukon__Kholifa/status/2105548109296304187",
-    views: 1200000,
-    likes: 58000,
-    comments: 910,
-    reposts: 7400,
-    date: "2026-10-22",
-    featured: true,
-    tags: ["Midjourney v6", "Veo", "Gen-3 Alpha", "Fantasy"],
-  },
-  {
-    id: "ai-floral",
-    platform: "ai",
-    title: "Flora Cyber Awakening",
-    orientation: "vertical",
-    thumbnail: "/thumbnails/ai-floral.webp",
-    duration: "0:32",
-    videoSrc: "/videos/ai-floral.mp4",
-    postUrl: "https://x.com/Rukon__Kholifa/status/2100911995096887367",
-    views: 920000,
-    likes: 45000,
-    comments: 670,
-    reposts: 4800,
-    date: "2026-10-17",
-    featured: true,
-    tags: ["Digital Art", "Motion AI", "Floral Aesthetics"],
-  },
-  {
-    id: "ai-city",
-    platform: "ai",
-    title: "Neo Metropolis 2099",
-    orientation: "vertical",
-    thumbnail: "/thumbnails/ai-city.webp",
-    duration: "0:40",
-    videoSrc: "/videos/ai-city.mp4",
-    postUrl: "https://x.com/Rukon__Kholifa/status/2048830511230111751",
-    views: 760000,
-    likes: 36000,
-    comments: 520,
-    reposts: 3800,
-    date: "2026-10-10",
-    featured: true,
-    tags: ["Sci-Fi", "World Building", "Sora/Veo Style"],
-  },
-  {
-    id: "ai-panda",
-    platform: "ai",
-    title: "Cyber Panda DJ",
-    orientation: "vertical",
-    thumbnail: "/thumbnails/ai-panda.webp",
-    duration: "0:28",
-    videoSrc: "/videos/ai-panda.mp4",
-    postUrl: "https://x.com/Rukon__Kholifa/status/2115483653782511988",
-    views: 680000,
-    likes: 31000,
-    comments: 410,
-    reposts: 3100,
-    date: "2026-10-06",
-    featured: true,
-    tags: ["Character Design", "3D AI", "Fun"],
-  },
-
-  // -------------------------------------------------------------
-  // EDITING PROJECTS (Vertical / 4:5 Cards)
-  // -------------------------------------------------------------
-  {
-    id: "project-doc",
-    platform: "project",
-    category: "Documentary",
-    title: "Ancient Warriors: The Untold Saga",
-    orientation: "vertical",
-    thumbnail: "/thumbnails/project-doc.webp",
-    duration: "8:45",
-    videoSrc: "/videos/project-doc.mp4",
-    postUrl: "https://x.com/Rukon__Kholifa/status/2115375486348280062",
-    views: 540000,
-    likes: 28000,
-    comments: 350,
-    reposts: 3200,
-    date: "2026-09-15",
-    featured: true,
-    tags: ["Mini-Doc", "Archival", "Premiere Pro", "Pacing"],
-  },
-  {
-    id: "project-perfume",
-    platform: "project",
-    category: "Commercial",
-    title: "Noir Luxury Fragrance Commercial",
-    orientation: "vertical",
-    thumbnail: "/thumbnails/project-perfume.webp",
-    duration: "0:45",
-    videoSrc: "/videos/project-perfume.mp4",
-    postUrl: "https://x.com/Rukon__Kholifa/status/2115112537314463749",
-    views: 430000,
-    likes: 24000,
-    comments: 290,
-    reposts: 2100,
-    date: "2026-09-20",
-    featured: true,
-    tags: ["Product Commercial", "Sound Design", "Color Grade"],
-  },
-  {
-    id: "project-travel",
-    platform: "project",
-    category: "Travel Film",
-    title: "Alpine Highways: Swiss Travel Film",
-    orientation: "vertical",
-    thumbnail: "/thumbnails/project-travel.webp",
-    duration: "4:15",
-    videoSrc: "/videos/project-travel.mp4",
-    postUrl: "https://x.com/Rukon__Kholifa/status/2114988943095840998",
-    views: 390000,
-    likes: 21000,
-    comments: 240,
-    reposts: 1800,
-    date: "2026-08-30",
-    featured: true,
-    tags: ["Cinematic Travel", "Drone Shots", "4K HDR"],
-  },
-  {
-    id: "project-gaming",
-    platform: "project",
-    category: "Gaming Edit",
-    title: "Cyber Runner: Cinematic Game Trailer",
-    orientation: "vertical",
-    thumbnail: "/thumbnails/project-gaming.webp",
-    duration: "2:30",
-    videoSrc: "/videos/project-gaming.mp4",
-    postUrl: "https://x.com/Rukon__Kholifa/status/2110989958823756114",
-    views: 480000,
-    likes: 29000,
-    comments: 310,
-    reposts: 3600,
-    date: "2026-09-05",
-    featured: true,
-    tags: ["Gaming Trailer", "Motion Tracking", "SFX"],
   },
 ];
