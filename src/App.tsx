@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useMemo, Suspense, lazy } from 'react';
+import React, { useState, useMemo, Suspense, lazy } from 'react';
 import { ThemeProvider } from './hooks/useTheme';
 import { Navbar } from './sections/Navbar';
 import { Hero } from './sections/Hero';
 import { StatsBar } from './sections/StatsBar';
-import { WorkSection } from './sections/WorkSection';
+import { LatestFromX } from './sections/LatestFromX';
+import { MediaTriad } from './sections/MediaTriad';
+import { AboutAndTools } from './sections/AboutAndTools';
 import { Footer } from './sections/Footer';
-import { WorkGalleryPage } from './pages/WorkGalleryPage';
 import type { VideoItem } from './data/videos';
 import { videosData } from './data/videos';
 
-// Code-split Modals for Lighthouse 90+ performance
+// Lazy-load Modals for fast initial paint
 const VideoModal = lazy(() =>
   import('./components/VideoModal').then((m) => ({ default: m.VideoModal }))
 );
@@ -20,39 +21,6 @@ const ShowreelModal = lazy(() =>
 export const AppContent: React.FC = () => {
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
   const [isShowreelOpen, setIsShowreelOpen] = useState(false);
-  const [currentRoute, setCurrentRoute] = useState<'home' | 'work'>('home');
-
-  // Handle SPA routing & URL changes
-  useEffect(() => {
-    const handleLocationChange = () => {
-      const pathname = window.location.pathname;
-      const hash = window.location.hash;
-      if (pathname === '/work' || hash === '#work-gallery' || pathname === '/videos') {
-        setCurrentRoute('work');
-      } else {
-        setCurrentRoute('home');
-      }
-    };
-
-    handleLocationChange();
-    window.addEventListener('popstate', handleLocationChange);
-    window.addEventListener('hashchange', handleLocationChange);
-    return () => {
-      window.removeEventListener('popstate', handleLocationChange);
-      window.removeEventListener('hashchange', handleLocationChange);
-    };
-  }, []);
-
-  const navigateTo = (route: string) => {
-    if (route === 'work') {
-      window.history.pushState({}, '', '/work');
-      setCurrentRoute('work');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      window.history.pushState({}, '', '/');
-      setCurrentRoute('home');
-    }
-  };
 
   const currentIndex = useMemo(() => {
     if (!selectedVideo) return -1;
@@ -76,35 +44,29 @@ export const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f7f7f5] text-[#111111] dark:bg-[#070707] dark:text-[#ffffff] transition-colors duration-300">
+    <div className="min-h-screen bg-[#f8f9fa] text-[#111111] dark:bg-[#070709] dark:text-[#ffffff] transition-colors duration-300 selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
       {/* 1. NAVBAR */}
-      <Navbar currentRoute={currentRoute} onNavigate={navigateTo} />
+      <Navbar />
 
       {/* MAIN SECTIONS */}
       <main>
-        {currentRoute === 'home' ? (
-          <>
-            {/* 2. HERO */}
-            <Hero onWatchShowreel={() => setIsShowreelOpen(true)} />
+        {/* 2. HERO */}
+        <Hero onWatchShowreel={() => setIsShowreelOpen(true)} />
 
-            {/* 3. STATS */}
-            <StatsBar />
+        {/* 3. STATS BAR (Overlapping Hero) */}
+        <StatsBar />
 
-            {/* 4. WORK */}
-            <WorkSection
-              onSelectVideo={setSelectedVideo}
-              onViewAll={() => navigateTo('work')}
-            />
-          </>
-        ) : (
-          <WorkGalleryPage
-            onSelectVideo={setSelectedVideo}
-            onBackToHome={() => navigateTo('home')}
-          />
-        )}
+        {/* 4. LATEST FROM X (TWITTER) */}
+        <LatestFromX onSelectVideo={setSelectedVideo} />
+
+        {/* 5. MEDIA TRIAD (Instagram Reels, AI Creations, Editing Projects) */}
+        <MediaTriad onSelectVideo={setSelectedVideo} />
+
+        {/* 6. ABOUT ME, TOOLS I USE, LET'S WORK TOGETHER */}
+        <AboutAndTools />
       </main>
 
-      {/* 5. FOOTER */}
+      {/* 7. FOOTER */}
       <Footer />
 
       {/* Fullscreen Video Modal */}

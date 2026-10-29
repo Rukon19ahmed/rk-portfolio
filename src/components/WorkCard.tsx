@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import type { VideoItem } from '../data/videos';
 import { formatNumber } from '../utils/formatters';
-import { Play } from 'lucide-react';
+import { Play, Eye, Heart, MessageCircle } from 'lucide-react';
 
 interface WorkCardProps {
   video: VideoItem;
@@ -45,16 +45,16 @@ export const WorkCard: React.FC<WorkCardProps> = ({ video, onClick, variant = 'x
         onClick={onClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        className="group relative cursor-pointer aspect-[9/16] rounded-[20px] overflow-hidden bg-neutral-900 border border-black/[0.04] dark:border-white/[0.08] shadow-card-light dark:shadow-none transition-transform duration-300 hover:-translate-y-1"
+        className="group relative cursor-pointer aspect-[9/16] rounded-[20px] overflow-hidden bg-[#101014] border border-black/8 dark:border-white/10 shadow-sm dark:shadow-[0_8px_30px_rgba(0,0,0,0.6)] transition-all duration-300 hover:-translate-y-1.5 hover:border-black/20 dark:hover:border-white/25 hover:shadow-xl dark:hover:shadow-[0_12px_40px_rgba(255,255,255,0.06)]"
       >
-        {/* Thumbnail or Fallback Shimmer */}
+        {/* Thumbnail Image */}
         {!imgError && video.thumbnail ? (
           <img
             src={video.thumbnail}
             alt={video.title}
             loading="lazy"
             onError={() => setImgError(true)}
-            className={`w-full h-full object-cover transition-opacity duration-300 ${
+            className={`w-full h-full object-cover object-bottom transition-all duration-500 group-hover:scale-105 ${
               isPlayingPreview ? 'opacity-0' : 'opacity-100'
             }`}
           />
@@ -64,7 +64,7 @@ export const WorkCard: React.FC<WorkCardProps> = ({ video, onClick, variant = 'x
           </div>
         )}
 
-        {/* Hover preview video */}
+        {/* Video Preview */}
         {video.videoSrc && (
           <video
             ref={videoRef}
@@ -80,23 +80,40 @@ export const WorkCard: React.FC<WorkCardProps> = ({ video, onClick, variant = 'x
           />
         )}
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
+        {/* Gradient shadow overlays */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/30 pointer-events-none" />
 
-        {/* Subtle play icon on hover */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-          <div className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center text-white">
-            <Play className="w-4 h-4 fill-white ml-0.5" />
+        {/* Top Category Badge */}
+        {video.category && (
+          <div className="absolute top-3 left-3 z-10">
+            <span className="px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[10px] font-semibold tracking-wider text-white uppercase">
+              {video.category}
+            </span>
+          </div>
+        )}
+
+        {/* Center Frosted Play Icon */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+          <div className="w-12 h-12 rounded-full bg-white/25 backdrop-blur-md border border-white/40 flex items-center justify-center text-white shadow-xl transform scale-90 group-hover:scale-100 transition-transform">
+            <Play className="w-5 h-5 fill-white ml-0.5" />
           </div>
         </div>
 
-        {/* Bottom: View count badge + Title on hover */}
-        <div className="absolute bottom-3 left-3 right-3 flex flex-col gap-1 z-10">
-          {video.views && video.views > 0 && (
-            <span className="text-[11px] font-normal text-white/90">
-              {formatNumber(video.views)} views
+        {/* Bottom Details Bar */}
+        <div className="absolute bottom-3.5 left-3.5 right-3.5 z-10 flex flex-col gap-1">
+          <div className="flex items-center gap-1.5">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-black/70 backdrop-blur-md border border-white/15 text-[11px] font-medium text-white shadow-sm">
+              <Eye className="w-3 h-3 text-neutral-300" />
+              <span>{formatNumber(video.views)}</span>
             </span>
-          )}
-          <h4 className="text-xs font-medium text-white truncate opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            {video.likes && video.likes > 0 && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md border border-white/15 text-[11px] font-medium text-rose-300 shadow-sm">
+                <Heart className="w-2.5 h-2.5 fill-rose-400" />
+                <span>{formatNumber(video.likes)}</span>
+              </span>
+            )}
+          </div>
+          <h4 className="text-xs font-semibold text-white truncate drop-shadow-sm mt-0.5">
             {video.title}
           </h4>
         </div>
@@ -112,16 +129,17 @@ export const WorkCard: React.FC<WorkCardProps> = ({ video, onClick, variant = 'x
       onClick={onClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="group cursor-pointer flex flex-col gap-3 transition-transform duration-300 hover:-translate-y-1"
+      className="group cursor-pointer flex flex-col gap-3 rounded-[22px] p-2 sm:p-2.5 bg-white dark:bg-[#101014] border border-black/8 dark:border-white/10 shadow-sm dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-all duration-300 hover:-translate-y-1.5 hover:border-black/20 dark:hover:border-white/25 hover:shadow-xl dark:hover:shadow-[0_12px_40px_rgba(255,255,255,0.06)]"
     >
-      <div className="relative aspect-[16/9] w-full rounded-[20px] overflow-hidden bg-neutral-900 border border-black/[0.04] dark:border-white/[0.08] shadow-card-light dark:shadow-none">
+      {/* 16:9 Thumbnail Viewport */}
+      <div className="relative aspect-[16/9] w-full rounded-[18px] overflow-hidden bg-neutral-900 border border-black/[0.04] dark:border-white/[0.06]">
         {!imgError && video.thumbnail ? (
           <img
             src={video.thumbnail}
             alt={video.title}
             loading="lazy"
             onError={() => setImgError(true)}
-            className={`w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-90 ${
+            className={`w-full h-full object-cover object-bottom transition-all duration-500 group-hover:scale-105 ${
               isPlayingPreview ? 'opacity-0' : 'opacity-100'
             }`}
           />
@@ -147,31 +165,74 @@ export const WorkCard: React.FC<WorkCardProps> = ({ video, onClick, variant = 'x
           />
         )}
 
-        {/* Subtle Play Button in Center */}
+        {/* Ambient Gradient Overlays */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none" />
+
+        {/* Top Category Badge */}
+        {video.category && (
+          <div className="absolute top-2.5 left-2.5 z-10">
+            <span className="px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[10px] font-semibold tracking-wider text-white uppercase">
+              {video.category}
+            </span>
+          </div>
+        )}
+
+        {/* Center Frosted Play Button */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-10 h-10 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white/90 transition-transform duration-300 group-hover:scale-105">
-            <Play className="w-4 h-4 fill-white/90 ml-0.5" />
+          <div className="w-11 h-11 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white shadow-xl transition-all duration-300 group-hover:scale-110 group-hover:bg-white group-hover:text-black">
+            <Play className="w-4 h-4 fill-current ml-0.5" />
           </div>
         </div>
 
-        {/* Duration pill (only if provided) */}
+        {/* Duration pill */}
         {video.duration && (
-          <div className="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-white text-[11px] font-normal">
+          <div className="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md text-white text-[11px] font-medium font-mono border border-white/10">
             {video.duration}
           </div>
         )}
       </div>
 
-      {/* Under Card: Title + Views only */}
-      <div className="flex flex-col gap-0.5 px-0.5">
-        <h3 className="font-sans font-medium text-sm sm:text-[15px] leading-snug text-neutral-900 dark:text-neutral-100 line-clamp-2">
+      {/* Details Area */}
+      <div className="flex flex-col gap-1.5 px-1 py-1">
+        {/* Title */}
+        <h3 className="font-sans font-semibold text-sm sm:text-[15px] leading-snug text-neutral-900 dark:text-neutral-100 line-clamp-1 group-hover:text-black dark:group-hover:text-white transition-colors">
           {video.title}
         </h3>
-        {video.views && video.views > 0 && (
-          <span className="text-xs text-neutral-500 dark:text-[#9a9a9a]">
-            {formatNumber(video.views)} views
-          </span>
+
+        {/* Caption Snippet */}
+        {video.caption && (
+          <p className="text-xs text-neutral-500 dark:text-[#9a9a9a] line-clamp-1 leading-relaxed">
+            {video.caption}
+          </p>
         )}
+
+        {/* Metrics Row */}
+        <div className="flex items-center justify-between pt-1 border-t border-black/[0.04] dark:border-white/[0.06] text-[11px] sm:text-xs text-neutral-500 dark:text-[#9a9a9a]">
+          <div className="flex items-center gap-3">
+            {video.views && video.views > 0 && (
+              <span className="flex items-center gap-1 font-medium text-neutral-800 dark:text-neutral-200" title={`${video.views.toLocaleString()} views`}>
+                <Eye className="w-3.5 h-3.5 text-neutral-400" />
+                <span>{formatNumber(video.views)}</span>
+              </span>
+            )}
+            {video.likes && video.likes > 0 && (
+              <span className="flex items-center gap-1" title={`${video.likes.toLocaleString()} likes`}>
+                <Heart className="w-3 h-3 text-rose-400" />
+                <span>{formatNumber(video.likes)}</span>
+              </span>
+            )}
+            {video.comments && video.comments > 0 && (
+              <span className="flex items-center gap-1" title={`${video.comments.toLocaleString()} comments`}>
+                <MessageCircle className="w-3 h-3 text-sky-400" />
+                <span>{formatNumber(video.comments)}</span>
+              </span>
+            )}
+          </div>
+
+          <span className="text-[11px] font-medium text-neutral-400 group-hover:text-black dark:group-hover:text-white transition-colors flex items-center gap-0.5">
+            Watch <span className="transform group-hover:translate-x-0.5 transition-transform">→</span>
+          </span>
+        </div>
       </div>
     </div>
   );

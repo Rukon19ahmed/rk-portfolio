@@ -1,46 +1,52 @@
 import React from 'react';
 import { profileData } from '../data/profile';
-import { XIcon, InstagramIcon } from '../components/SocialIcons';
 
 export const Footer: React.FC = () => {
+  const navLinks = [
+    { label: 'Home', href: '#home' },
+    { label: 'Videos', href: '#videos' },
+    { label: 'AI Creations', href: '#ai-creations' },
+    { label: 'Projects', href: '#projects' },
+    { label: 'About', href: '#about' },
+    { label: 'Contact', href: '#contact' },
+  ];
+
   return (
-    <footer id="footer" className="py-12 sm:py-16 mt-20 border-t border-black/[0.04] dark:border-white/[0.06] bg-transparent">
-      <div className="max-w-[1440px] mx-auto px-6 sm:px-12 lg:px-24">
-        {/* One quiet line */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+    <footer className="py-8 border-t border-black/[0.06] dark:border-white/[0.06] bg-white/50 dark:bg-[#070709]/50 backdrop-blur-md">
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           
-          {/* Left: Brand name */}
-          <div className="font-sans font-medium text-sm text-black dark:text-white">
-            {profileData.brand}
+          {/* BRAND */}
+          <div className="flex items-center gap-3">
+            <div className="w-7 h-7 rounded-lg overflow-hidden flex items-center justify-center border border-black/10 dark:border-white/10 shadow-sm">
+              <img src="/logo/rk-logo.png" alt="RK Logo" className="w-full h-full object-cover" />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-heading font-black text-sm text-black dark:text-white tracking-tight uppercase">
+                {profileData.brandName}
+              </span>
+              <span className="text-[11px] text-neutral-500 dark:text-neutral-400">
+                Video Editor &nbsp;|&nbsp; AI Creator &nbsp;|&nbsp; Visual Storyteller
+              </span>
+            </div>
           </div>
 
-          {/* Right: Social icons + Tiny copyright */}
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-4 text-neutral-500 dark:text-[#9a9a9a]">
+          {/* NAV LINKS */}
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs text-neutral-600 dark:text-neutral-400">
+            {navLinks.map(link => (
               <a
-                href={profileData.x}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="X (Twitter)"
+                key={link.label}
+                href={link.href}
                 className="hover:text-black dark:hover:text-white transition-colors"
               >
-                <XIcon className="w-4 h-4" />
+                {link.label}
               </a>
+            ))}
+          </div>
 
-              <a
-                href={profileData.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                className="hover:text-black dark:hover:text-white transition-colors"
-              >
-                <InstagramIcon className="w-4 h-4" />
-              </a>
-            </div>
-
-            <span className="text-xs text-neutral-400 dark:text-neutral-600">
-              © 2026
-            </span>
+          {/* COPYRIGHT */}
+          <div className="text-xs text-neutral-500 dark:text-neutral-500">
+            © 2026 {profileData.brandName}. All rights reserved.
           </div>
 
         </div>

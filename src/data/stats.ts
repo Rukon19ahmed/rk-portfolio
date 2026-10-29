@@ -2,82 +2,87 @@ import { videosData } from './videos';
 
 export interface StatItem {
   id: string;
-  value: number;
   label: string;
-  displayOverride?: string;
+  value: number; // Raw number for animated count-up
+  displayOverride?: string; // e.g. "12M+" or "2.9K+"
+  icon: 'x' | 'eye' | 'video' | 'heart' | 'repeat';
 }
 
 export interface StatsConfig {
   useAutoCalculatedTotalViews: boolean;
-  manualTotalViews?: {
+  manualTotalViewsOverride?: {
     value: number;
     display: string;
   };
-  useAutoCalculatedVideosCount: boolean;
-  manualVideosCount?: {
-    value: number;
-    display: string;
-  };
-  followersOnX: {
-    value: number;
-    display: string;
-  };
+  stats: StatItem[];
 }
 
 export const statsConfig: StatsConfig = {
-  // If true, automatically sums up views in videos.ts. If false, uses manualTotalViews.
   useAutoCalculatedTotalViews: false,
-  manualTotalViews: {
+  manualTotalViewsOverride: {
     value: 12_000_000,
     display: "12M+",
   },
-  // If true, automatically counts videos in videos.ts. If false, uses manualVideosCount.
-  useAutoCalculatedVideosCount: false,
-  manualVideosCount: {
-    value: 150,
-    display: "150+",
-  },
-  followersOnX: {
-    value: 2900,
-    display: "2.9K",
-  },
+  stats: [
+    {
+      id: "followers-x",
+      label: "Followers on X",
+      value: 2900,
+      displayOverride: "2.9K+",
+      icon: "x",
+    },
+    {
+      id: "total-views",
+      label: "Total Video Views",
+      value: 12000000,
+      displayOverride: "12M+",
+      icon: "eye",
+    },
+    {
+      id: "videos-created",
+      label: "Videos Created",
+      value: 150,
+      displayOverride: "150+",
+      icon: "video",
+    },
+    {
+      id: "total-likes",
+      label: "Total Likes",
+      value: 450000,
+      displayOverride: "450K+",
+      icon: "heart",
+    },
+    {
+      id: "reposts-shares",
+      label: "Reposts / Shares",
+      value: 25000,
+      displayOverride: "25K+",
+      icon: "repeat",
+    },
+  ],
 };
 
-export function getStats(): StatItem[] {
-  // 1. Total Views
-  let totalViewsValue = statsConfig.manualTotalViews?.value || 0;
-  let totalViewsDisplay = statsConfig.manualTotalViews?.display;
-  if (statsConfig.useAutoCalculatedTotalViews) {
-    totalViewsValue = videosData.reduce((acc, curr) => acc + (curr.views || 0), 0);
-    totalViewsDisplay = undefined;
-  }
-
-  // 2. Videos Count
-  let videosCountValue = statsConfig.manualVideosCount?.value || 0;
-  let videosCountDisplay = statsConfig.manualVideosCount?.display;
-  if (statsConfig.useAutoCalculatedVideosCount) {
-    videosCountValue = videosData.length;
-    videosCountDisplay = `${videosData.length}+`;
-  }
-
-  return [
-    {
-      id: "views",
-      value: totalViewsValue,
-      label: "Views",
-      displayOverride: totalViewsDisplay,
-    },
-    {
-      id: "videos",
-      value: videosCountValue,
-      label: "Videos",
-      displayOverride: videosCountDisplay,
-    },
-    {
-      id: "followers",
-      value: statsConfig.followersOnX.value,
-      label: "Followers",
-      displayOverride: statsConfig.followersOnX.display,
-    },
-  ];
+/**
+ * Helper to get the computed stats list, incorporating the live video sum if enabled.
+ */
+export function getComputedStats(): StatItem[] {
+  return statsConfig.stats.map(stat => {
+    if (stat.id === 'total-views') {
+      if (statsConfig.useAutoCalculatedTotalViews) {
+        const sumViews = videosData.reduce((acc, curr) => acc + (curr.views || 0), 0);
+        return {
+          ...stat,
+          value: sumViews,
+          displayOverride: undefined,
+        };
+      } else if (statsConfig.manualTotalViewsOverride) {
+        return {
+          ...stat,
+          value: statsConfig.manualTotalViewsOverride.value,
+          displayOverride: statsConfig.manualTotalViewsOverride.display,
+        };
+      }
+    }
+    return stat;
+  });
 }
